@@ -12,7 +12,8 @@ class Room:
         :param description: Text description for this room
         """
         self.description = description
-        self.exits = {}  # Dictionary
+        self.exits =        {}          # Dictionary
+        self.room_items =   {}          # Dictionary
 
     def set_exit(self, direction, neighbour):
         """
@@ -23,6 +24,25 @@ class Room:
         :return: None
         """
         self.exits[direction] = neighbour
+
+    def add_item_to_room(self, item):
+        """
+            Add the item to room_items that are stored in a list.
+            All item are objects from item class.
+        :param item: The item in the room
+        :return: None
+        """
+        # self.room_items.append(item)
+    
+        self.room_items[item.item_name] = item
+
+
+    def get_room_items(self):
+        """
+            Print the items in the room
+        """
+        for item, feature in self.room_items.items():
+            print(f'The items are: {item}, description: {feature.feature}')
 
     def get_short_description(self):
         """

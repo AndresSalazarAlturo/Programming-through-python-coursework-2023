@@ -18,6 +18,8 @@ converted to Python by Kingsley Sage.
 
 from room import Room
 from text_ui import TextUI
+from items import Item
+from backpack import Backpack
 
 
 class Game:
@@ -112,6 +114,30 @@ class Game:
         ##Dining room posibilities
         self.dining_room.set_exit("west", self.kitchen)
 
+        ###############################
+        #####Initialize the objects####
+        ###############################
+
+        # Create items
+        self.card = Item("card", "could open a locker")
+        self.code = Item("code", 1234)
+        self.document = Item("document", "some important information to continue")
+
+        ## Dictionary of all items
+        
+
+        # Add items to rooms
+        self.cleaning_room.add_item_to_room(self.card)
+        self.cleaning_room.add_item_to_room(self.code)
+        self.cleaning_room.add_item_to_room(self.document)
+
+        ################################
+        #####Initialize the backpack####
+        ################################
+
+        ##Create the backpack
+        self.backpack = Backpack(2)
+
     def play(self):
         """
             The main play loop.
@@ -142,7 +168,7 @@ class Game:
             Show a list of available commands.
         :return: None
         """
-        return ['help', 'go', 'current room','quit']
+        return ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use','quit']
     
     def show_posible_movements(self):
         """
@@ -169,6 +195,17 @@ class Game:
             self.do_go_command(second_word)
         elif command_word == "CURRENT" and second_word == "ROOM":
             self.textUI.print_to_textUI(self.current_room.get_short_description())
+        elif command_word == "EXPLORE":
+            self.textUI.print_to_textUI(self.current_room.get_room_items())
+        elif command_word == "PICK":
+            self.do_pick_command(second_word)
+        elif command_word == 'ITEMS':
+            self.textUI.print_to_textUI(self.backpack.show_all_items())
+        # elif command_word == "USE":
+        #     # check player has item
+        #     if 
+        #     # check the room can use the item
+        #     pass
         elif command_word == "QUIT":
             want_to_quit = True
         else:
@@ -176,16 +213,22 @@ class Game:
             self.textUI.print_to_textUI("Don't know what you mean.")
 
         return want_to_quit
-
-    def print_help(self):
+    
+    def do_pick_command(self, second_word):
         """
-            Display some useful help text.
+            Performs the PICK command.
+        :param second_word: the item the player want to add to backpack
         :return: None
         """
-        self.textUI.print_to_textUI("You are lost. You are alone. You wander")
-        self.textUI.print_to_textUI("around the deserted complex.")
-        self.textUI.print_to_textUI("")
-        self.textUI.print_to_textUI(f'Your command words are: {self.show_command_words()}.')
+        if second_word == None:
+            # Missing second word...
+            self.textUI.print_to_textUI("Pick what item?")
+            return
+        
+        if self.backpack.check_item(second_word):
+            self.textUI.print_to_textUI("Item already in the backpack")
+        else:
+            self.backpack.add_item(self.current_room.room_items[second_word])
 
     def do_go_command(self, second_word):
         """
@@ -199,18 +242,26 @@ class Game:
             return
 
         next_room = self.current_room.get_exit(second_word)
-        # print(next_room, " Next room")
         if next_room == None:
             self.textUI.print_to_textUI("There is no door!")
         else:
             self.current_room = next_room
             self.textUI.print_to_textUI(self.current_room.get_long_description())
 
+    def print_help(self):
+        """
+            Display some useful help text.
+        :return: None
+        """
+        self.textUI.print_to_textUI("You are lost. You are alone. You wander")
+        self.textUI.print_to_textUI("around the deserted complex.")
+        self.textUI.print_to_textUI("")
+        self.textUI.print_to_textUI(f'Your command words are: {self.show_command_words()}.')
+
 
 def main():
     game = Game()
     game.play()
-
 
 if __name__ == "__main__":
     main()

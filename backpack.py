@@ -27,6 +27,14 @@ class Backpack:
         finally:
             print('Carrying on...')
 
+    def show_all_items(self):
+        """
+            Print all items in the backpack
+        """
+        print("Your items are:\n")
+        for item in self.contents:
+            print(f'{item.item_name}')
+
     def check_item(self, item):
         """Returns True if item is in backpack, False otherwise."""
         return item in self.contents
