@@ -36,50 +36,81 @@ class Game:
             Sets up all room assets.
         :return: None
         """
+        #########################################
+        ######Now create the room objects########
+        #########################################
+
         ##Initialise all the rooms in the map
-        self.first_room = Room("Your Initial location")
-        self.outside = Room("You are outside")
-        self.lobby = Room("in the lobby")
-        self.corridor = Room("in a corridor")
-        self.lab = Room("in a computing lab")
-        self.office = Room("in the computing admin office")
-        self.kitchen = Room("in the kitchen")
+        self.first_room = Room("your Initial location")
+
+        ##Intialize corridor1
+        self.corridor1 = Room("in a corridor1")
+
+        ##Rooms option to corridor1
         self.cleaning_room = Room("in the cleaning room")
         self.security_room = Room("in the security room")
 
+        ##Initialize corridor2
+        self.corridor2 = Room("in a corridor2")
+
+        ##Rooms option to corridor2
+        self.lab = Room("in a computing lab")
+        self.office = Room("in the computing admin office")
+        self.kitchen = Room("in the kitchen")
+
+        ##Kitchen options
+        self.outside = Room("You are outside")
+        self.garden = Room("in the garden")
+        self.dining_room = Room("in the dining room")
+
+        #########################################
+        ####Now create the exits for each room###
+        #########################################
+
         ##First room posibilities
         """Empty room, nothing to look for"""
-        self.first_room.set_exit("north", self.corridor)
+        self.first_room.set_exit("north", self.corridor1)
+
+        ##Corridor1 posibilities
+        self.corridor1.set_exit("west", self.cleaning_room)
+        self.corridor1.set_exit("east", self.security_room)
+        self.corridor1.set_exit("north", self.corridor2)
+        self.corridor1.set_exit("south", self.first_room)
 
         ##Cleaning room posibilites
         """Could find a hint to solve a puzzle"""
-        self.cleaning_room.set_exit("east", self.lobby)
+        self.cleaning_room.set_exit("east", self.corridor1)
 
         ##Security room posibilities
         """Could find the key to go into the kitchen"""
-        self.security_room.set_exit("west", self.lobby)
+        self.security_room.set_exit("west", self.corridor1)
 
-        ##Outside posibilities
-        self.outside.set_exit("east", self.lobby)
-        self.outside.set_exit("south", self.lab)
-        self.outside.set_exit("west", self.corridor)
+        ##Corridor2 posibilities
+        self.corridor2.set_exit("west", self.lab)
+        self.corridor2.set_exit("east", self.office)
+        self.corridor2.set_exit("north", self.kitchen)
+        self.corridor2.set_exit("south", self.corridor1)
 
-        ##Lobby posibilities
-        self.lobby.set_exit("north", self.kitchen)
-        self.lobby.set_exit("south", self.first_room)
-        self.lobby.set_exit("west", self.cleaning_room)
-        self.lobby.set_exit("east", self.security_room)
-
-
-        ##Corridor posibilities
-        self.corridor.set_exit("east", self.outside)
-        
         ##Lab posibilities
-        self.lab.set_exit("north", self.outside)
-        self.lab.set_exit("east", self.office)
+        self.lab.set_exit("east", self.corridor2)
         
         ##Office posibilities
-        self.office.set_exit("west", self.lab)
+        self.office.set_exit("west", self.corridor2)
+
+        ##Kitchen posibilities
+        self.kitchen.set_exit("west", self.garden)
+        self.kitchen.set_exit("east", self.dining_room)
+        self.kitchen.set_exit("north", self.outside)
+        self.kitchen.set_exit("south", self.corridor2)
+
+        ##Outside posibilities - Change this options
+        self.outside.set_exit("south", self.kitchen)
+
+        ##Garden posibilities
+        self.garden.set_exit("east", self.kitchen)
+
+        ##Dining room posibilities
+        self.dining_room.set_exit("west", self.kitchen)
 
     def play(self):
         """
@@ -128,7 +159,8 @@ class Game:
         command_word, second_word = command
         if command_word != None:
             command_word = command_word.upper()
-            second_word = second_word.upper()
+            if second_word == "room":
+                second_word = second_word.upper()
 
         want_to_quit = False
         if command_word == "HELP":
@@ -167,6 +199,7 @@ class Game:
             return
 
         next_room = self.current_room.get_exit(second_word)
+        # print(next_room, " Next room")
         if next_room == None:
             self.textUI.print_to_textUI("There is no door!")
         else:
