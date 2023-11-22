@@ -21,7 +21,6 @@ from text_ui import TextUI
 from items import Item
 from backpack import Backpack
 
-
 class Game:
 
     def __init__(self):
@@ -136,7 +135,7 @@ class Game:
         ################################
 
         ##Create the backpack
-        self.backpack = Backpack(2)
+        self.backpack = Backpack(1)
 
     def play(self):
         """
@@ -190,14 +189,19 @@ class Game:
 
         want_to_quit = False
         if command_word == "HELP":
+            ##Show useful information about the game and commands
             self.print_help()
         elif command_word == "GO":
+            ##Direction is the second word
             self.do_go_command(second_word)
         elif command_word == "CURRENT" and second_word == "ROOM":
+            ##Display current room info
             self.textUI.print_to_textUI(self.current_room.get_short_description())
         elif command_word == "EXPLORE":
+            ##Show the available items in the room
             self.textUI.print_to_textUI(self.current_room.get_room_items())
         elif command_word == "PICK":
+            ##Item to pick is the second word
             self.do_pick_command(second_word)
         elif command_word == 'ITEMS':
             self.textUI.print_to_textUI(self.backpack.show_all_items())
@@ -210,6 +214,7 @@ class Game:
             ##Item to delete is second word
             self.do_remove_command(second_word)
         elif command_word == "QUIT":
+            ##Close the game
             want_to_quit = True
         else:
             # Unknown command...
@@ -245,7 +250,10 @@ class Game:
         if self.backpack.check_item(second_word):
             self.textUI.print_to_textUI("Item already in the backpack")
         else:
-            self.backpack.add_item(self.current_room.room_items[second_word])
+            try:
+                self.backpack.add_item(self.current_room.room_items[second_word])
+            except KeyError:
+                print("Item not in the room")
 
     def do_go_command(self, second_word):
         """
@@ -279,7 +287,7 @@ class Game:
         self.textUI.print_to_textUI("To remove an item from backpack, type command 'remove' + 'item you want to remove'")
         self.textUI.print_to_textUI("Use 'quit' command to finish the game")
 
-# ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
+        # ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
 
 def main():
     game = Game()

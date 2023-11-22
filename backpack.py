@@ -1,3 +1,5 @@
+from my_exceptions import NotInBackpackError, FullBackpackError
+
 class Backpack:
     """
     A class to allow us to pickup and put down items...
@@ -11,10 +13,15 @@ class Backpack:
 
     def add_item(self, item):
         """Adds an item to our backpack."""
-        if len(self.contents) < self.capacity:
-            # self.contents.append(item)
-            self.contents[item.item_name] = item
-            return True
+        try:
+            if len(self.contents) < self.capacity:
+                # self.contents.append(item)
+                self.contents[item.item_name] = item
+                return True
+            else:
+                raise FullBackpackError(self.capacity, 'Your backpack is full')
+        except FullBackpackError:
+            print("The back pack is full")
         return False
 
     def remove_item(self, item):
@@ -41,7 +48,3 @@ class Backpack:
         """Returns True if item is in backpack, False otherwise."""
         return item in self.contents
 
-
-class NotInBackpackError(Exception):
-    def __init__(self, item, message):
-        print(f'{item} {message}')
