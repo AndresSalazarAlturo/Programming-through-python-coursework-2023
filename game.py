@@ -270,11 +270,16 @@ class Game:
             Display some useful help text.
         :return: None
         """
-        self.textUI.print_to_textUI("You are lost. You are alone. You wander")
-        self.textUI.print_to_textUI("around the deserted complex.")
-        self.textUI.print_to_textUI("")
         self.textUI.print_to_textUI(f'Your command words are: {self.show_command_words()}.')
+        self.textUI.print_to_textUI("To move through the map use the command 'go' + 'direction you want to go'")
+        self.textUI.print_to_textUI("The 'current room' commmand give your current position")
+        self.textUI.print_to_textUI("The 'explore' command shows the items that you can pick in that room")
+        self.textUI.print_to_textUI("To pick an item in the room use command 'pick' + 'item you want to pick'")
+        self.textUI.print_to_textUI("To use an item, type command 'use' + 'item you want to use'")
+        self.textUI.print_to_textUI("To remove an item from backpack, type command 'remove' + 'item you want to remove'")
+        self.textUI.print_to_textUI("Use 'quit' command to finish the game")
 
+# ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
 
 def main():
     game = Game()

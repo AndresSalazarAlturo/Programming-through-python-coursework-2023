@@ -25,7 +25,7 @@ class Backpack:
             self.contents.pop(item)
             return True
         except NotInBackpackError:
-            print('Check your items and delete one of them if you want')
+            print("Check your items with 'items' command and delete one of them if you want")
         # finally:
         #     print('Carrying on...')
 
