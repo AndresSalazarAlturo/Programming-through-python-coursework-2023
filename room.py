@@ -6,12 +6,15 @@ Create a room described "description". Initially, it has no exits. The
 
 class Room:
 
-    def __init__(self, description):
+    def __init__(self, description, locked, password):
         """
             Constructor method.
         :param description: Text description for this room
+        :param locked: Boolean that represents if a rooms is locked by card or not
         """
         self.description = description
+        self.locked = locked
+        self.password = password
         self.exits =        {}          # Dictionary
         self.room_items =   {}          # Dictionary
 

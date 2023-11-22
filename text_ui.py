@@ -27,6 +27,28 @@ class TextUI:
                 word2 = None
             # Just ignore any other words
         return (word1, word2)
+    
+    def print_welcome(self):
+        """
+            Displays a welcome message.
+        :return: None
+        """
+        self.print_to_textUI("You are lost. You are alone. You wander")
+        self.print_to_textUI("around the deserted complex.")
+        self.print_to_textUI("")
+
+    def show_posible_movements(self):
+        """
+            Show the possible movements that the player can do
+        """
+        return ['north, south, west, east']
+
+    def show_command_words(self):
+        """
+            Show a list of available commands.
+        :return: None
+        """
+        return ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
         
     def objetives(self):
         """
@@ -34,6 +56,22 @@ class TextUI:
         """
         
         pass
+
+    def print_help(self):
+        """
+            Display some useful help text.
+        :return: None
+        """
+        self.print_to_textUI(f'Your command words are: {self.textUI.show_command_words()}.')
+        self.print_to_textUI("To move through the map use the command 'go' + 'direction you want to go'")
+        self.print_to_textUI("The 'current room' commmand give your current position")
+        self.print_to_textUI("The 'explore' command shows the items that you can pick in that room")
+        self.print_to_textUI("To pick an item in the room use command 'pick' + 'item you want to pick'")
+        self.print_to_textUI("To use an item, type command 'use' + 'item you want to use'")
+        self.print_to_textUI("To remove an item from backpack, type command 'remove' + 'item you want to remove'")
+        self.print_to_textUI("Use 'quit' command to finish the game")
+
+        # ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
 
     def print_to_textUI(self, text):
         """

@@ -29,7 +29,7 @@ class Game:
         """
         self.create_rooms()
         ##Initial position
-        self.current_room = self.first_room
+        self.current_room = self.corridor1
         self.textUI = TextUI()
 
     def create_rooms(self):
@@ -42,27 +42,27 @@ class Game:
         #########################################
 
         ##Initialise all the rooms in the map
-        self.first_room = Room("your Initial location")
+        self.first_room = Room("your Initial location", False, False)
 
         ##Intialize corridor1
-        self.corridor1 = Room("in a corridor1")
+        self.corridor1 = Room("in a corridor1", False, False)
 
         ##Rooms option to corridor1
-        self.cleaning_room = Room("in the cleaning room")
-        self.security_room = Room("in the security room")
+        self.cleaning_room = Room("in the cleaning room", False, False)
+        self.security_room = Room("in the security room", True, False)
 
         ##Initialize corridor2
-        self.corridor2 = Room("in a corridor2")
+        self.corridor2 = Room("in a corridor2", False, True)
 
         ##Rooms option to corridor2
-        self.lab = Room("in a computing lab")
-        self.office = Room("in the computing admin office")
-        self.kitchen = Room("in the kitchen")
+        self.lab = Room("in a computing lab", False, False)
+        self.office = Room("in the computing admin office", False, False)
+        self.kitchen = Room("in the kitchen", False, False)
 
         ##Kitchen options
-        self.outside = Room("You are outside")
-        self.garden = Room("in the garden")
-        self.dining_room = Room("in the dining room")
+        self.outside = Room("You are outside", False, False)
+        self.garden = Room("in the garden", False, False)
+        self.dining_room = Room("in the dining room", False, False)
 
         #########################################
         ####Now create the exits for each room###
@@ -118,7 +118,7 @@ class Game:
         ###############################
 
         # Create items
-        self.card = Item("card", "could open a locker")
+        self.card = Item("card", "could open a door")
         self.code = Item("code", 1234)
         self.document = Item("document", "some important information to continue")
 
@@ -143,37 +143,14 @@ class Game:
         :return: None
         """
 
-        self.print_welcome()
+        self.textUI.print_welcome()
         finished = False
         while not finished:
-            self.textUI.print_to_textUI(f'command words: {self.show_command_words()}')
-            self.textUI.print_to_textUI(f'possible movements: {self.show_posible_movements()}')
+            self.textUI.print_to_textUI(f'command words: {self.textUI.show_command_words()}')
+            self.textUI.print_to_textUI(f'possible movements: {self.textUI.show_posible_movements()}')
             command = self.textUI.get_command()  # Returns a 2-tuple
             finished = self.process_command(command)
         print("Thank you for playing!")
-
-    def print_welcome(self):
-        """
-            Displays a welcome message.
-        :return: None
-        """
-        self.textUI.print_to_textUI("You are lost. You are alone. You wander")
-        self.textUI.print_to_textUI("around the deserted complex.")
-        self.textUI.print_to_textUI("")
-        # self.textUI.print_to_textUI(f'Your command words are: {self.show_command_words()}')
-
-    def show_command_words(self):
-        """
-            Show a list of available commands.
-        :return: None
-        """
-        return ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
-    
-    def show_posible_movements(self):
-        """
-            Show the possible movements that the player can do
-        """
-        return ['north, south, west, east']
 
     def process_command(self, command):
         """
@@ -190,7 +167,7 @@ class Game:
         want_to_quit = False
         if command_word == "HELP":
             ##Show useful information about the game and commands
-            self.print_help()
+            self.textUI.print_help()
         elif command_word == "GO":
             ##Direction is the second word
             self.do_go_command(second_word)
@@ -266,28 +243,30 @@ class Game:
             self.textUI.print_to_textUI("Go where?")
             return
 
+        ## get_exit return the room object
         next_room = self.current_room.get_exit(second_word)
         if next_room == None:
             self.textUI.print_to_textUI("There is no door!")
+        ## Access a room with just a card
+        elif next_room.locked == True:
+            if "card" in self.backpack.contents:
+                self.current_room = next_room
+                self.textUI.print_to_textUI(self.current_room.get_long_description())
+            else:
+                self.textUI.print_to_textUI("You do not have the card to access security room")
+        ## Access a room tying a password
+        elif next_room.password == True:
+            self.textUI.print_to_textUI("Type the password")
+            password, second_word = self.textUI.get_command()
+            if password == '1234':
+                self.current_room = next_room
+                self.textUI.print_to_textUI(self.current_room.get_long_description())
+            else:
+                self.textUI.print_to_textUI("That is not the password")
+        ## Go inside the room if does not require card, password and it was typed properly
         else:
             self.current_room = next_room
             self.textUI.print_to_textUI(self.current_room.get_long_description())
-
-    def print_help(self):
-        """
-            Display some useful help text.
-        :return: None
-        """
-        self.textUI.print_to_textUI(f'Your command words are: {self.show_command_words()}.')
-        self.textUI.print_to_textUI("To move through the map use the command 'go' + 'direction you want to go'")
-        self.textUI.print_to_textUI("The 'current room' commmand give your current position")
-        self.textUI.print_to_textUI("The 'explore' command shows the items that you can pick in that room")
-        self.textUI.print_to_textUI("To pick an item in the room use command 'pick' + 'item you want to pick'")
-        self.textUI.print_to_textUI("To use an item, type command 'use' + 'item you want to use'")
-        self.textUI.print_to_textUI("To remove an item from backpack, type command 'remove' + 'item you want to remove'")
-        self.textUI.print_to_textUI("Use 'quit' command to finish the game")
-
-        # ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
 
 def main():
     game = Game()
