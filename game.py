@@ -168,7 +168,7 @@ class Game:
             Show a list of available commands.
         :return: None
         """
-        return ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use','quit']
+        return ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
     
     def show_posible_movements(self):
         """
@@ -206,6 +206,9 @@ class Game:
         #     if 
         #     # check the room can use the item
         #     pass
+        elif command_word == 'REMOVE':
+            ##Item to delete is second word
+            self.do_remove_command(second_word)
         elif command_word == "QUIT":
             want_to_quit = True
         else:
@@ -214,10 +217,24 @@ class Game:
 
         return want_to_quit
     
+    def do_remove_command(self, second_word):
+        """
+            Performs the REMOVE command.
+        :param second_word: the item the player wants to remove from backpack
+        :return: None
+        """
+
+        if second_word == None:
+            # Missing second word...
+            self.textUI.print_to_textUI("Remove what item?")
+            return
+        
+        self.backpack.remove_item(second_word)
+    
     def do_pick_command(self, second_word):
         """
             Performs the PICK command.
-        :param second_word: the item the player want to add to backpack
+        :param second_word: the item the player wants to add to backpack
         :return: None
         """
         if second_word == None:

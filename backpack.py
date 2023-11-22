@@ -6,13 +6,14 @@ class Backpack:
     """
 
     def __init__(self, capacity):
-        self.contents = []
-        self.capacity = capacity
+        self.contents = {}          ##Dictionaty of items with their description as a value
+        self.capacity = capacity    ##Backpack capacity
 
     def add_item(self, item):
         """Adds an item to our backpack."""
         if len(self.contents) < self.capacity:
-            self.contents.append(item)
+            # self.contents.append(item)
+            self.contents[item.item_name] = item
             return True
         return False
 
@@ -21,11 +22,12 @@ class Backpack:
         try:
             if item not in self.contents:
                 raise NotInBackpackError(item, 'is not in the backpack.')
-            self.contents.remove(item)
+            self.contents.pop(item)
+            return True
         except NotInBackpackError:
-            print('Exception handled here...')
-        finally:
-            print('Carrying on...')
+            print('Check your items and delete one of them if you want')
+        # finally:
+        #     print('Carrying on...')
 
     def show_all_items(self):
         """
@@ -33,7 +35,7 @@ class Backpack:
         """
         print("Your items are:\n")
         for item in self.contents:
-            print(f'{item.item_name}')
+            print(f'{item}')
 
     def check_item(self, item):
         """Returns True if item is in backpack, False otherwise."""
