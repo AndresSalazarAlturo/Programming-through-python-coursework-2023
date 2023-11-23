@@ -9,3 +9,7 @@ class NotInBackpackError(Exception):
 class FullBackpackError(Exception):
     def __init__(self, capacity, message):
         print(f'{message}, you backpack capacity is {capacity}')
+
+class WrongPassword(Exception):
+    def __init__(self, message):
+        print(f'{message}')

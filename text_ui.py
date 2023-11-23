@@ -2,7 +2,6 @@
 A simple text based User Interface (UI) for the Adventure World game.
 """
 
-
 class TextUI:
 
     def __init__(self):
@@ -62,7 +61,7 @@ class TextUI:
             Display some useful help text.
         :return: None
         """
-        self.print_to_textUI(f'Your command words are: {self.textUI.show_command_words()}.')
+        self.print_to_textUI(f'Your command words are: {self.show_command_words()}.')
         self.print_to_textUI("To move through the map use the command 'go' + 'direction you want to go'")
         self.print_to_textUI("The 'current room' commmand give your current position")
         self.print_to_textUI("The 'explore' command shows the items that you can pick in that room")

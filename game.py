@@ -42,27 +42,27 @@ class Game:
         #########################################
 
         ##Initialise all the rooms in the map
-        self.first_room = Room("your Initial location", False, False)
+        self.first_room = Room("your Initial location")
 
         ##Intialize corridor1
-        self.corridor1 = Room("in a corridor1", False, False)
+        self.corridor1 = Room("in a corridor1")
 
         ##Rooms option to corridor1
-        self.cleaning_room = Room("in the cleaning room", False, False)
-        self.security_room = Room("in the security room", True, False)
+        self.cleaning_room = Room("in the cleaning room")
+        self.security_room = Room("in the security room", password='1234')
 
         ##Initialize corridor2
-        self.corridor2 = Room("in a corridor2", False, True)
+        self.corridor2 = Room("in a corridor2", locked="card")
 
         ##Rooms option to corridor2
-        self.lab = Room("in a computing lab", False, False)
-        self.office = Room("in the computing admin office", False, False)
-        self.kitchen = Room("in the kitchen", False, False)
+        self.lab = Room("in a computing lab")
+        self.office = Room("in the computing admin office")
+        self.kitchen = Room("in the kitchen")
 
         ##Kitchen options
-        self.outside = Room("You are outside", False, False)
-        self.garden = Room("in the garden", False, False)
-        self.dining_room = Room("in the dining room", False, False)
+        self.outside = Room("You are outside")
+        self.garden = Room("in the garden")
+        self.dining_room = Room("in the dining room")
 
         #########################################
         ####Now create the exits for each room###
@@ -247,26 +247,52 @@ class Game:
         next_room = self.current_room.get_exit(second_word)
         if next_room == None:
             self.textUI.print_to_textUI("There is no door!")
-        ## Access a room with just a card
-        elif next_room.locked == True:
-            if "card" in self.backpack.contents:
-                self.current_room = next_room
-                self.textUI.print_to_textUI(self.current_room.get_long_description())
-            else:
-                self.textUI.print_to_textUI("You do not have the card to access security room")
-        ## Access a room tying a password
-        elif next_room.password == True:
-            self.textUI.print_to_textUI("Type the password")
-            password, second_word = self.textUI.get_command()
-            if password == '1234':
-                self.current_room = next_room
-                self.textUI.print_to_textUI(self.current_room.get_long_description())
-            else:
-                self.textUI.print_to_textUI("That is not the password")
-        ## Go inside the room if does not require card, password and it was typed properly
+
         else:
+            ## Check if the room has password
+            if next_room.password is not None:
+                self.textUI.print_to_textUI("Type the password")
+                password, second_word = self.textUI.get_command()
+                if next_room.can_enter(self.backpack, password=password):
+                    ##Enter the room
+                    self.current_room = next_room
+                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    return
+                else:
+                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    return
+            
+            ## Check if the room is locked
+            if next_room.locked is not None:
+                ## Go inside the room if does not require card, password and it was typed properly
+                if next_room.can_enter(self.backpack):
+                    self.current_room = next_room
+                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    return
+                else:
+                ## If the card is not in the backpack, stay in the current room, not access allowed
+                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    return
+            ## If the rooms does not have key or password just go in
             self.current_room = next_room
             self.textUI.print_to_textUI(self.current_room.get_long_description())
+
+# ## Access a room with just a card
+#         elif next_room.locked == True:
+#             if "card" in self.backpack.contents:
+#                 self.current_room = next_room
+#                 self.textUI.print_to_textUI(self.current_room.get_long_description())
+#             else:
+#                 self.textUI.print_to_textUI("You do not have the card to access security room")
+#         ## Access a room tying a password
+#         elif next_room.password == True:
+#             self.textUI.print_to_textUI("Type the password")
+#             password, second_word = self.textUI.get_command()
+#             if password == '1234':
+#                 self.current_room = next_room
+#                 self.textUI.print_to_textUI(self.current_room.get_long_description())
+#             else:
+#                 self.textUI.print_to_textUI("That is not the password")
 
 def main():
     game = Game()

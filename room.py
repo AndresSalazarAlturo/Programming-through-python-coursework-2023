@@ -2,11 +2,11 @@
 Create a room described "description". Initially, it has no exits. The
 'description' is something like 'kitchen' or 'an open court yard'.
 """
-
+from my_exceptions import NotInBackpackError, WrongPassword
 
 class Room:
 
-    def __init__(self, description, locked, password):
+    def __init__(self, description, locked = None, password=None):
         """
             Constructor method.
         :param description: Text description for this room
@@ -38,6 +38,40 @@ class Room:
         # self.room_items.append(item)
     
         self.room_items[item.item_name] = item
+
+    def can_enter(self, backpack, password = ""):
+        """
+            Allow access to a room locked by object or password
+        :param backpack: Backpack object
+        :param next_room: Next room object
+        :return: True to allow access or False when wrong password or objecto not in backpack
+        """
+        if self.locked is not None:
+            try:
+                if "card" not in backpack.contents:
+                    raise NotInBackpackError("card", "Not in backpack")
+                else:
+                    return True
+            except NotInBackpackError:
+                return False
+
+        if self.password is not None:
+            try:
+                if self.password == password:
+                    return True
+                else:
+                    raise WrongPassword("Wrong password, try again")
+            except WrongPassword:
+                return False
+
+    # def can_enter(self, backpack, password = ""):
+    #     if self.password is not None and self.password != password:
+    #         return False
+            
+    #     if "card" not in self.backpack:
+    #         return False
+        
+    #     return True
 
 
     def get_room_items(self):
