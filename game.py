@@ -27,9 +27,12 @@ class Game:
         """
         Initialises the game.
         """
+        ##Dictionary with all rooms, key as string name and value as object
+        self.game_rooms = {}
+        ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.current_room = self.corridor1
+        self.current_room = self.cleaning_room
         self.textUI = TextUI()
 
     def create_rooms(self):
@@ -55,8 +58,8 @@ class Game:
         self.corridor2 = Room("in a corridor2", locked="card")
 
         ##Rooms option to corridor2
-        self.lab = Room("in a computing lab")
-        self.office = Room("in the computing admin office")
+        self.lab = Room("in a computing lab", password='4321')
+        self.office = Room("in the computing admin office", locked="card2")
         self.kitchen = Room("in the kitchen")
 
         ##Kitchen options
@@ -117,25 +120,33 @@ class Game:
         #####Initialize the objects####
         ###############################
 
-        # Create items
+        # Create items for cleaning room
         self.card = Item("card", "could open a door")
         self.code = Item("code", 1234)
-        self.document = Item("document", "some important information to continue")
+        self.stone = Item("stone", "allow teleport")
 
-        ## Dictionary of all items
-        
+        ## Create items for security room
+        self.card2 = Item("card2", "could open another door")
 
-        # Add items to rooms
+        # Add items to cleaning room
         self.cleaning_room.add_item_to_room(self.card)
         self.cleaning_room.add_item_to_room(self.code)
-        self.cleaning_room.add_item_to_room(self.document)
+        self.cleaning_room.add_item_to_room(self.stone)
+
+        # Add items to security room
+        self.security_room.add_item_to_room(self.card2)
 
         ################################
         #####Initialize the backpack####
         ################################
 
         ##Create the backpack
-        self.backpack = Backpack(1)
+        self.backpack = Backpack(4)
+
+        ##Create a dictionary with all positions
+        self.game_rooms = {"first_room":self.first_room, "corridor1":self.corridor1, "cleaning_room":self.cleaning_room,"security_room":self.security_room,
+                           "corridor2":self.corridor2, "computing_lab":self.lab, "office":self.office, "kitchen":self.kitchen,
+                           "outside":self.outside, "garden":self.garden, "dining_room":self.dining_room}
 
     def play(self):
         """
@@ -182,11 +193,12 @@ class Game:
             self.do_pick_command(second_word)
         elif command_word == 'ITEMS':
             self.textUI.print_to_textUI(self.backpack.show_all_items())
-        # elif command_word == "USE":
-        #     # check player has item
-        #     if 
-        #     # check the room can use the item
-        #     pass
+        elif command_word == "USE":
+            # # check player has item
+            # if 
+            # # check the room can use the item
+            # pass
+            self.do_use_command(second_word)
         elif command_word == 'REMOVE':
             ##Item to delete is second word
             self.do_remove_command(second_word)
@@ -199,6 +211,27 @@ class Game:
 
         return want_to_quit
     
+    def do_use_command(self, second_word):
+        """
+            Performs the USE command. Now performs the teleport with the 'stone' object
+            :param second_word: the item the player wants to remove from backpack
+            :return: None
+        """
+
+        if second_word == None:
+            # Missing second word...
+            self.textUI.print_to_textUI("use what item?")
+            return
+        
+        room_response = self.current_room.allow_teleport(self.backpack, self.game_rooms)
+        if room_response == False:
+            self.textUI.print_to_textUI("You do not have the stone to teleport")
+        elif room_response == None:
+            return
+        else:
+            self.current_room = room_response
+            self.textUI.print_to_textUI(self.current_room.get_long_description())
+
     def do_remove_command(self, second_word):
         """
             Performs the REMOVE command.
@@ -276,23 +309,6 @@ class Game:
             ## If the rooms does not have key or password just go in
             self.current_room = next_room
             self.textUI.print_to_textUI(self.current_room.get_long_description())
-
-# ## Access a room with just a card
-#         elif next_room.locked == True:
-#             if "card" in self.backpack.contents:
-#                 self.current_room = next_room
-#                 self.textUI.print_to_textUI(self.current_room.get_long_description())
-#             else:
-#                 self.textUI.print_to_textUI("You do not have the card to access security room")
-#         ## Access a room tying a password
-#         elif next_room.password == True:
-#             self.textUI.print_to_textUI("Type the password")
-#             password, second_word = self.textUI.get_command()
-#             if password == '1234':
-#                 self.current_room = next_room
-#                 self.textUI.print_to_textUI(self.current_room.get_long_description())
-#             else:
-#                 self.textUI.print_to_textUI("That is not the password")
 
 def main():
     game = Game()

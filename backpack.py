@@ -15,7 +15,6 @@ class Backpack:
         """Adds an item to our backpack."""
         try:
             if len(self.contents) < self.capacity:
-                # self.contents.append(item)
                 self.contents[item.item_name] = item
                 return True
             else:

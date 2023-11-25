@@ -7,4 +7,8 @@ class Item:
         self.feature = feature
 
     def get_item_description(self):
+        """
+            Print the item descriptio
+            :return: None
+        """
         print(f"{self.item_name} - {self.feature}")

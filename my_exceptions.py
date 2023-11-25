@@ -13,3 +13,7 @@ class FullBackpackError(Exception):
 class WrongPassword(Exception):
     def __init__(self, message):
         print(f'{message}')
+
+class NotExistingRoom(Exception):
+    def __init__(self, room, message):
+        print(f'{room} {message}')

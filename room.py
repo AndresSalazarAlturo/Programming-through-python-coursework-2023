@@ -2,7 +2,8 @@
 Create a room described "description". Initially, it has no exits. The
 'description' is something like 'kitchen' or 'an open court yard'.
 """
-from my_exceptions import NotInBackpackError, WrongPassword
+from my_exceptions import NotInBackpackError, WrongPassword, NotExistingRoom
+from text_ui import TextUI
 
 class Room:
 
@@ -15,6 +16,7 @@ class Room:
         self.description = description
         self.locked = locked
         self.password = password
+        self.textUI_room = TextUI()
         self.exits =        {}          # Dictionary
         self.room_items =   {}          # Dictionary
 
@@ -50,6 +52,8 @@ class Room:
             try:
                 if "card" not in backpack.contents:
                     raise NotInBackpackError("card", "Not in backpack")
+                elif "card2" not in backpack.contents:
+                    raise NotInBackpackError("card2", "Not in backpack")
                 else:
                     return True
             except NotInBackpackError:
@@ -63,16 +67,32 @@ class Room:
                     raise WrongPassword("Wrong password, try again")
             except WrongPassword:
                 return False
-
-    # def can_enter(self, backpack, password = ""):
-    #     if self.password is not None and self.password != password:
-    #         return False
             
-    #     if "card" not in self.backpack:
-    #         return False
-        
-    #     return True
-
+    def allow_teleport(self, backpack, game_rooms):
+        """
+            Allow teleportation with an specific object
+            :param backpack: Player backpack
+            :param player_current_room: Player's current room, is the room object
+            :param game_rooms: Dictionary with all rooms, key: string name; value: room object
+            :return: True or False depending if the object is in the backpack
+        """
+        try:
+            if "stone" not in backpack.contents:
+                raise NotInBackpackError("stone", "no in backpack")
+            else:
+                print("Type your destination: ")
+                destination, second_word = self.textUI_room.get_command()
+                try:
+                    if destination not in game_rooms:
+                        raise NotExistingRoom(destination, "does not exists")
+                    else:
+                        next_room = game_rooms.get(destination)
+                        player_current_room = next_room
+                        return player_current_room
+                except NotExistingRoom:
+                    print("Try an existing room")
+        except NotInBackpackError:
+            return False
 
     def get_room_items(self):
         """
