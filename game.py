@@ -63,9 +63,16 @@ class Game:
         self.kitchen = Room("in the kitchen")
 
         ##Kitchen options
-        self.outside = Room("You are outside")
+        self.stairs = Room("You are in the stairs")
         self.garden = Room("in the garden")
         self.dining_room = Room("in the dining room")
+
+        ##Stairs options
+        self.basement = Room("You are in the basement")
+
+        ##Basement options
+        self.laundry_room = Room("You are in the laundry room")
+        self.storage = Room("Ypu are in the storage")
 
         #########################################
         ####Now create the exits for each room###
@@ -104,17 +111,28 @@ class Game:
         ##Kitchen posibilities
         self.kitchen.set_exit("west", self.garden)
         self.kitchen.set_exit("east", self.dining_room)
-        self.kitchen.set_exit("north", self.outside)
+        self.kitchen.set_exit("north", self.stairs)
         self.kitchen.set_exit("south", self.corridor2)
 
-        ##Outside posibilities - Change this options
-        self.outside.set_exit("south", self.kitchen)
+        ##stairs posibilities - Change this options
+        self.stairs.set_exit("north", self.basement)
+        self.stairs.set_exit("south", self.kitchen)
 
         ##Garden posibilities
         self.garden.set_exit("east", self.kitchen)
 
         ##Dining room posibilities
         self.dining_room.set_exit("west", self.kitchen)
+
+        ##Basement posibilities
+        self.basement.set_exit("west", self.storage)
+        self.basement.set_exit("east", self.laundry_room)
+
+        ##Storage posibilities
+        self.storage.set_exit("east", self.basement)
+
+        ##Laundry room posibilities
+        self.laundry_room.set_exit("west", self.basement)
 
         ###############################
         #####Initialize the objects####
@@ -146,7 +164,7 @@ class Game:
         ##Create a dictionary with all positions
         self.game_rooms = {"first_room":self.first_room, "corridor1":self.corridor1, "cleaning_room":self.cleaning_room,"security_room":self.security_room,
                            "corridor2":self.corridor2, "computing_lab":self.lab, "office":self.office, "kitchen":self.kitchen,
-                           "outside":self.outside, "garden":self.garden, "dining_room":self.dining_room}
+                           "stairs":self.stairs, "garden":self.garden, "dining_room":self.dining_room}
 
     def play(self):
         """

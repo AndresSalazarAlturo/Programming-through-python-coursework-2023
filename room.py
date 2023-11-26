@@ -46,13 +46,13 @@ class Room:
             Allow access to a room locked by object or password
         :param backpack: Backpack object
         :param next_room: Next room object
-        :return: True to allow access or False when wrong password or objecto not in backpack
+        :return: True to allow access or False when wrong password or object not in backpack
         """
         if self.locked is not None:
             try:
-                if "card" not in backpack.contents:
+                if self.locked == "card" and "card" not in backpack.contents:
                     raise NotInBackpackError("card", "Not in backpack")
-                elif "card2" not in backpack.contents:
+                elif self.locked == "card2" and "card2" not in backpack.contents:
                     raise NotInBackpackError("card2", "Not in backpack")
                 else:
                     return True
