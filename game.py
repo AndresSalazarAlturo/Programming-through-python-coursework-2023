@@ -20,6 +20,7 @@ from room import Room
 from text_ui import TextUI
 from items import Item
 from backpack import Backpack
+from player import Player
 
 class Game:
 
@@ -29,10 +30,13 @@ class Game:
         """
         ##Dictionary with all rooms, key as string name and value as object
         self.game_rooms = {}
+        ##Create the player object
+        self.my_player = Player()
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.current_room = self.cleaning_room
+        self.my_player.current_room = self.cleaning_room
+        ##Text to UI object
         self.textUI = TextUI()
 
     def create_rooms(self):
@@ -161,6 +165,9 @@ class Game:
         ##Create the backpack
         self.backpack = Backpack(4)
 
+        ##Assign backpack to player
+        self.my_player.backpack = self.backpack
+
         ##Create a dictionary with all positions
         self.game_rooms = {"first_room":self.first_room, "corridor1":self.corridor1, "cleaning_room":self.cleaning_room,"security_room":self.security_room,
                            "corridor2":self.corridor2, "computing_lab":self.lab, "office":self.office, "kitchen":self.kitchen,
@@ -171,15 +178,22 @@ class Game:
             The main play loop.
         :return: None
         """
-
+        ##Print the welcome message
         self.textUI.print_welcome()
+
+        ##Set player's name
+        self.textUI.print_to_textUI("Type your name/nickname: ")
+        player_name, second_word = self.textUI.get_command()     ##Returns a 2-tuple
+        self.my_player.name = player_name
+        self.textUI.print_to_textUI(f"Nice to meet you {self.my_player.name}, let's start!!")
+
         finished = False
         while not finished:
             self.textUI.print_to_textUI(f'command words: {self.textUI.show_command_words()}')
             self.textUI.print_to_textUI(f'possible movements: {self.textUI.show_posible_movements()}')
             command = self.textUI.get_command()  # Returns a 2-tuple
             finished = self.process_command(command)
-        print("Thank you for playing!")
+        self.textUI.print_to_textUI("Thank you for playing!")
 
     def process_command(self, command):
         """
@@ -202,20 +216,18 @@ class Game:
             self.do_go_command(second_word)
         elif command_word == "CURRENT" and second_word == "ROOM":
             ##Display current room info
-            self.textUI.print_to_textUI(self.current_room.get_short_description())
+            self.textUI.print_to_textUI(self.my_player.current_room.get_short_description())
         elif command_word == "EXPLORE":
             ##Show the available items in the room
-            self.textUI.print_to_textUI(self.current_room.get_room_items())
+            self.textUI.print_to_textUI(self.my_player.current_room.get_room_items())
         elif command_word == "PICK":
             ##Item to pick is the second word
             self.do_pick_command(second_word)
         elif command_word == 'ITEMS':
-            self.textUI.print_to_textUI(self.backpack.show_all_items())
+            ##Show the items in the backpack
+            self.textUI.print_to_textUI(self.my_player.backpack.show_all_items())
         elif command_word == "USE":
-            # # check player has item
-            # if 
-            # # check the room can use the item
-            # pass
+            ##Use one item in the backpack
             self.do_use_command(second_word)
         elif command_word == 'REMOVE':
             ##Item to delete is second word
@@ -241,14 +253,14 @@ class Game:
             self.textUI.print_to_textUI("use what item?")
             return
         
-        room_response = self.current_room.allow_teleport(self.backpack, self.game_rooms)
+        room_response = self.my_player.current_room.allow_teleport(self.my_player.backpack, self.game_rooms)
         if room_response == False:
             self.textUI.print_to_textUI("You do not have the stone to teleport")
         elif room_response == None:
             return
         else:
-            self.current_room = room_response
-            self.textUI.print_to_textUI(self.current_room.get_long_description())
+            self.my_player.current_room = room_response
+            self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
 
     def do_remove_command(self, second_word):
         """
@@ -262,7 +274,7 @@ class Game:
             self.textUI.print_to_textUI("Remove what item?")
             return
         
-        self.backpack.remove_item(second_word)
+        self.my_player.backpack.remove_item(second_word)
     
     def do_pick_command(self, second_word):
         """
@@ -275,11 +287,11 @@ class Game:
             self.textUI.print_to_textUI("Pick what item?")
             return
         
-        if self.backpack.check_item(second_word):
+        if self.my_player.backpack.check_item(second_word):
             self.textUI.print_to_textUI("Item already in the backpack")
         else:
             try:
-                self.backpack.add_item(self.current_room.room_items[second_word])
+                self.my_player.backpack.add_item(self.my_player.current_room.room_items[second_word])
             except KeyError:
                 print("Item not in the room")
 
@@ -295,7 +307,7 @@ class Game:
             return
 
         ## get_exit return the room object
-        next_room = self.current_room.get_exit(second_word)
+        next_room = self.my_player.current_room.get_exit(second_word)
         if next_room == None:
             self.textUI.print_to_textUI("There is no door!")
 
@@ -304,29 +316,29 @@ class Game:
             if next_room.password is not None:
                 self.textUI.print_to_textUI("Type the password")
                 password, second_word = self.textUI.get_command()
-                if next_room.can_enter(self.backpack, password=password):
+                if next_room.can_enter(self.my_player.backpack, password=password):
                     ##Enter the room
-                    self.current_room = next_room
-                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    self.my_player.current_room = next_room
+                    self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
                     return
                 else:
-                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
                     return
             
             ## Check if the room is locked
             if next_room.locked is not None:
                 ## Go inside the room if does not require card, password and it was typed properly
-                if next_room.can_enter(self.backpack):
-                    self.current_room = next_room
-                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                if next_room.can_enter(self.my_player.backpack):
+                    self.my_player.current_room = next_room
+                    self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
                     return
                 else:
                 ## If the card is not in the backpack, stay in the current room, not access allowed
-                    self.textUI.print_to_textUI(self.current_room.get_long_description())
+                    self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
                     return
             ## If the rooms does not have key or password just go in
-            self.current_room = next_room
-            self.textUI.print_to_textUI(self.current_room.get_long_description())
+            self.my_player.current_room = next_room
+            self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
 
 def main():
     game = Game()

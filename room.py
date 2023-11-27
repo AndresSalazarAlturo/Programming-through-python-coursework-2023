@@ -37,8 +37,7 @@ class Room:
         :param item: The item in the room
         :return: None
         """
-        # self.room_items.append(item)
-    
+
         self.room_items[item.item_name] = item
 
     def can_enter(self, backpack, password = ""):
