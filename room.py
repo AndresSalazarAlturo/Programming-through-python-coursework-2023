@@ -29,6 +29,7 @@ class Room:
         :return: None
         """
         self.exits[direction] = neighbour
+        return True
 
     def add_item_to_room(self, item):
         """
@@ -39,6 +40,7 @@ class Room:
         """
 
         self.room_items[item.item_name] = item
+        return True
 
     def can_enter(self, backpack, password = ""):
         """
@@ -80,6 +82,9 @@ class Room:
                 raise NotInBackpackError("stone", "no in backpack")
             else:
                 print("Type your destination: ")
+                print("The available rooms to teleport are: ")
+                for i, rooms in enumerate(game_rooms.keys()):
+                    print(f"{i}. {rooms}")
                 destination, second_word = self.textUI_room.get_command()
                 try:
                     if destination not in game_rooms:
@@ -121,6 +126,20 @@ class Room:
         """
         all_exits = list(self.exits.keys())
         return all_exits
+    
+    def get_number_of_exits(self):
+        """
+            Return the number of exits in the room
+        """
+        all_exits = list(self.exits.keys())
+        return len(all_exits)
+    
+    def get_number_of_room_items(self):
+        """
+            Return the number of items in the room
+        """
+        all_items = list(self.room_items.keys())
+        return len(all_items)
 
     def get_exit(self, direction):
         """

@@ -21,7 +21,7 @@ class Backpack:
                 raise FullBackpackError(self.capacity, 'Your backpack is full')
         except FullBackpackError:
             print("The back pack is full")
-        return False
+            return False
 
     def remove_item(self, item):
         """Removes an item from our backpack."""
@@ -32,8 +32,16 @@ class Backpack:
             return True
         except NotInBackpackError:
             print("Check your items with 'items' command and delete one of them if you want")
+            return False
         # finally:
         #     print('Carrying on...')
+
+    def get_number_of_items(self):
+        """
+            Return the number of items in the backpack
+        """
+        all_items = list(self.contents.keys())
+        return len(all_items)
 
     def show_all_items(self):
         """

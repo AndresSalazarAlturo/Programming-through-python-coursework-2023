@@ -163,7 +163,7 @@ class Game:
         ################################
 
         ##Create the backpack
-        self.backpack = Backpack(4)
+        self.backpack = Backpack(1)
 
         ##Assign backpack to player
         self.my_player.backpack = self.backpack
@@ -171,7 +171,8 @@ class Game:
         ##Create a dictionary with all positions
         self.game_rooms = {"first_room":self.first_room, "corridor1":self.corridor1, "cleaning_room":self.cleaning_room,"security_room":self.security_room,
                            "corridor2":self.corridor2, "computing_lab":self.lab, "office":self.office, "kitchen":self.kitchen,
-                           "stairs":self.stairs, "garden":self.garden, "dining_room":self.dining_room}
+                           "stairs":self.stairs, "garden":self.garden, "dining_room":self.dining_room,
+                           "basement":self.basement, "storage_room":self.storage, "laundry_room":self.laundry_room}
 
     def play(self):
         """
@@ -275,7 +276,8 @@ class Game:
             return
         
         self.my_player.backpack.remove_item(second_word)
-    
+        self.textUI.print_to_textUI(f"{second_word} was remove from your backpack")
+
     def do_pick_command(self, second_word):
         """
             Performs the PICK command.
@@ -291,7 +293,10 @@ class Game:
             self.textUI.print_to_textUI("Item already in the backpack")
         else:
             try:
-                self.my_player.backpack.add_item(self.my_player.current_room.room_items[second_word])
+                if (self.my_player.backpack.add_item(self.my_player.current_room.room_items[second_word])):
+                    self.textUI.print_to_textUI(f"{second_word} has been added to you back pack")
+                else:
+                    self.textUI.print_to_textUI("Try to remove an item")
             except KeyError:
                 print("Item not in the room")
 
