@@ -146,6 +146,7 @@ class Game:
         self.card = Item("card", "could open a door")
         self.code = Item("code", 1234)
         self.stone = Item("stone", "allow teleport")
+        self.pocket = Item("pocket", 1)
 
         ## Create items for security room
         self.card2 = Item("card2", "could open another door")
@@ -158,6 +159,7 @@ class Game:
         self.cleaning_room.add_item_to_room(self.card)
         self.cleaning_room.add_item_to_room(self.code)
         self.cleaning_room.add_item_to_room(self.stone)
+        self.cleaning_room.add_item_to_room(self.pocket)
 
         # Add items to security room
         self.security_room.add_item_to_room(self.card2)
@@ -286,6 +288,13 @@ class Game:
                 if guess == 'back':
                     quit_puzzle = True
                 quit_puzzle = self.my_player.current_room.solve_puzzle(int(guess), self.my_player.backpack)
+
+        ##Use pocket to increase backpack capacity
+        elif second_word == "pocket":
+            self.my_player.backpack.increase_backpack_capacity(second_word)
+
+        else: 
+            self.textUI.print_to_textUI("The object is not in the backpack")
 
 
     def do_remove_command(self, second_word):

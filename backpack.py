@@ -36,6 +36,16 @@ class Backpack:
         # finally:
         #     print('Carrying on...')
 
+    def increase_backpack_capacity(self, item):
+        """
+            Increase the backpack capacity
+            :param backpack: Backpack object
+        """
+        increase_value = self.contents[item]
+        self.capacity += increase_value.feature
+        print(f"The new backpack capacity is {self.capacity}")
+        return True
+
     def get_number_of_items(self):
         """
             Return the number of items in the backpack
