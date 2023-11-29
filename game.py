@@ -150,6 +150,10 @@ class Game:
         ## Create items for security room
         self.card2 = Item("card2", "could open another door")
 
+        ##Create one item that is a puzzle
+        self.puzzle = Item("puzzle", "is some puzzle", puzzle = "puzzle")
+        self.document = Item("document", "the key could be in the basement")
+
         # Add items to cleaning room
         self.cleaning_room.add_item_to_room(self.card)
         self.cleaning_room.add_item_to_room(self.code)
@@ -157,6 +161,11 @@ class Game:
 
         # Add items to security room
         self.security_room.add_item_to_room(self.card2)
+
+        ##Add puzzle to lab
+        self.lab.add_item_to_room(self.puzzle)
+        ##Add hidden document to lab
+        self.lab.add_hidden_item_to_room(self.document)
 
         ################################
         #####Initialize the backpack####
@@ -254,14 +263,30 @@ class Game:
             self.textUI.print_to_textUI("use what item?")
             return
         
-        room_response = self.my_player.current_room.allow_teleport(self.my_player.backpack, self.game_rooms)
-        if room_response == False:
-            self.textUI.print_to_textUI("You do not have the stone to teleport")
-        elif room_response == None:
-            return
-        else:
-            self.my_player.current_room = room_response
-            self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
+        ##Use the stone to teleport
+        if second_word == "stone":
+            room_response = self.my_player.current_room.allow_teleport(self.my_player.backpack, self.game_rooms)
+            if room_response == False:
+                self.textUI.print_to_textUI("You do not have the stone to teleport")
+            elif room_response == None:
+                return
+            else:
+                self.my_player.current_room = room_response
+                self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
+
+        ##Use the puzzle
+        elif second_word == "puzzle":
+            quit_puzzle = False
+            self.textUI.print_to_textUI("When solve the puzzle, and item will be added to your backpack")
+            self.textUI.print_to_textUI("Be sure that you have enough space!")
+            while not quit_puzzle:
+                self.textUI.print_to_textUI("Solve the puzzle to continue")
+                self.textUI.print_to_textUI("Type 'back' to try the puzzle later")
+                guess, word2 = self.textUI.get_command()                         # Returns a 2-tuple
+                if guess == 'back':
+                    quit_puzzle = True
+                quit_puzzle = self.my_player.current_room.solve_puzzle(int(guess), self.my_player.backpack)
+
 
     def do_remove_command(self, second_word):
         """
@@ -275,8 +300,8 @@ class Game:
             self.textUI.print_to_textUI("Remove what item?")
             return
         
-        self.my_player.backpack.remove_item(second_word)
-        self.textUI.print_to_textUI(f"{second_word} was remove from your backpack")
+        if self.my_player.backpack.remove_item(second_word) == True:
+            self.textUI.print_to_textUI(f"{second_word} was remove from your backpack")
 
     def do_pick_command(self, second_word):
         """

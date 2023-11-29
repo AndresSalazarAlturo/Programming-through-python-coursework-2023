@@ -4,6 +4,7 @@ Create a room described "description". Initially, it has no exits. The
 """
 from my_exceptions import NotInBackpackError, WrongPassword, NotExistingRoom
 from text_ui import TextUI
+import random
 
 class Room:
 
@@ -19,6 +20,7 @@ class Room:
         self.textUI_room = TextUI()
         self.exits =        {}          # Dictionary
         self.room_items =   {}          # Dictionary
+        self.hidden_items = {}          # Dictionary
 
     def set_exit(self, direction, neighbour):
         """
@@ -31,15 +33,48 @@ class Room:
         self.exits[direction] = neighbour
         return True
 
+    def solve_puzzle(self, guess, backpack):
+        """
+            Create a basic guess the number puzzle, the user knows if the guess
+            is too high or too low
+            :param guess: user guess
+        """
+        random.seed(20)
+        num = random.randint(1, 10)
+
+        if guess == num:
+            print("congratulations! you won!")
+            backpack.add_item(self.room_items["document"])
+            print("A new item has been added to your backpack!")
+            print("Check it to know where to look the key!")
+            return True
+        elif guess > num:
+            print("Your guess is too high")
+        elif guess < num:
+            print("Your guess is too low")
+        else:
+            print("nope, sorry. try again!")
+
     def add_item_to_room(self, item):
         """
-            Add the item to room_items that are stored in a list.
+            Add the item to room_items that are stored in a dictionary.
             All item are objects from item class.
         :param item: The item in the room
         :return: None
         """
 
         self.room_items[item.item_name] = item
+        return True
+    
+    def add_hidden_item_to_room(self, item):
+        """
+            Add the hidden item to room_items that are stored in a dictionary.
+            All item are objects from item class.
+        :param item: The item in the room
+        :return: None
+        """
+
+        self.hidden_items[item.item_name] = item
         return True
 
     def can_enter(self, backpack, password = ""):
