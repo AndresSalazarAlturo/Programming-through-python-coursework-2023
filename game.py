@@ -15,12 +15,15 @@ David J. Barnes. The original was written in Java and has been simplified and
 converted to Python by Kingsley Sage.
 """
 
+#Set the path to other directories
+import sys
+sys.path.append('./')
 
-from room import Room
-from text_ui import TextUI
-from items import Item
-from backpack import Backpack
-from player import Player
+from src.room import Room
+from src.text_ui import TextUI
+from src.items import Item
+from src.backpack import Backpack
+from src.player import Player
 
 class Game:
 
@@ -174,7 +177,7 @@ class Game:
         ################################
 
         ##Create the backpack
-        self.backpack = Backpack(1)
+        self.backpack = Backpack(2)
 
         ##Assign backpack to player
         self.my_player.backpack = self.backpack
@@ -197,12 +200,16 @@ class Game:
         self.textUI.print_to_textUI("Type your name/nickname: ")
         player_name, second_word = self.textUI.get_command()     ##Returns a 2-tuple
         self.my_player.name = player_name
+        self.textUI.print_lines()
         self.textUI.print_to_textUI(f"Nice to meet you {self.my_player.name}, let's start!!")
+        self.textUI.print_lines()
 
         finished = False
         while not finished:
             self.textUI.print_to_textUI(f'command words: {self.textUI.show_command_words()}')
+            self.textUI.print_lines()
             self.textUI.print_to_textUI(f'possible movements: {self.textUI.show_posible_movements()}')
+            self.textUI.print_lines()
             command = self.textUI.get_command()  # Returns a 2-tuple
             finished = self.process_command(command)
         self.textUI.print_to_textUI("Thank you for playing!")
@@ -223,30 +230,43 @@ class Game:
         if command_word == "HELP":
             ##Show useful information about the game and commands
             self.textUI.print_help()
+
         elif command_word == "GO":
             ##Direction is the second word
             self.do_go_command(second_word)
+            self.textUI.print_lines()
+
         elif command_word == "CURRENT" and second_word == "ROOM":
             ##Display current room info
             self.textUI.print_to_textUI(self.my_player.current_room.get_short_description())
+
         elif command_word == "EXPLORE":
             ##Show the available items in the room
-            self.textUI.print_to_textUI(self.my_player.current_room.get_room_items())
+            self.my_player.current_room.get_room_items()
+
         elif command_word == "PICK":
             ##Item to pick is the second word
             self.do_pick_command(second_word)
+            self.textUI.print_lines()
+        
         elif command_word == 'ITEMS':
             ##Show the items in the backpack
-            self.textUI.print_to_textUI(self.my_player.backpack.show_all_items())
+            self.my_player.backpack.show_all_items()
+            self.textUI.print_lines()
+
         elif command_word == "USE":
             ##Use one item in the backpack
             self.do_use_command(second_word)
+
         elif command_word == 'REMOVE':
             ##Item to delete is second word
             self.do_remove_command(second_word)
+            self.textUI.print_lines()
+
         elif command_word == "QUIT":
             ##Close the game
             want_to_quit = True
+
         else:
             # Unknown command...
             self.textUI.print_to_textUI("Don't know what you mean.")
@@ -268,6 +288,7 @@ class Game:
         ##Use the stone to teleport
         if second_word == "stone":
             room_response = self.my_player.current_room.allow_teleport(self.my_player.backpack, self.game_rooms)
+            self.textUI.print_lines()
             if room_response == False:
                 self.textUI.print_to_textUI("You do not have the stone to teleport")
             elif room_response == None:

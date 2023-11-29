@@ -1,4 +1,4 @@
-from my_exceptions import NotInBackpackError, FullBackpackError
+from src.my_exceptions import NotInBackpackError, FullBackpackError
 
 class Backpack:
     """

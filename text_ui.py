@@ -56,6 +56,12 @@ class TextUI:
         
         pass
 
+    def print_lines(self):
+        """
+            Print some lines to make easier to understand the text and commands
+        """
+        self.print_to_textUI("---------------------------------------------------------")
+
     def print_help(self):
         """
             Display some useful help text.
@@ -78,4 +84,4 @@ class TextUI:
         :param text: Text to be displayed
         :return: None
         """
-        print(text)
+        return print(text)

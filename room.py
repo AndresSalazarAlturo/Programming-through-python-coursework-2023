@@ -2,8 +2,9 @@
 Create a room described "description". Initially, it has no exits. The
 'description' is something like 'kitchen' or 'an open court yard'.
 """
-from my_exceptions import NotInBackpackError, WrongPassword, NotExistingRoom
-from text_ui import TextUI
+
+from src.my_exceptions import NotInBackpackError, WrongPassword, NotExistingRoom
+from src.text_ui import TextUI
 import random
 
 class Room:
@@ -87,8 +88,10 @@ class Room:
         if self.locked is not None:
             try:
                 if self.locked == "card" and "card" not in backpack.contents:
+                    print("The object 'card' is needed to access this room")
                     raise NotInBackpackError("card", "Not in backpack")
                 elif self.locked == "card2" and "card2" not in backpack.contents:
+                    print("The object 'card2' is needed to access this room")
                     raise NotInBackpackError("card2", "Not in backpack")
                 else:
                     return True
@@ -137,8 +140,9 @@ class Room:
         """
             Print the items in the room
         """
+        print(f"The items are: ")
         for item, feature in self.room_items.items():
-            print(f'The items are: {item}, description: {feature.feature}')
+            print(f'{item} --> description: {feature.feature}')
 
     def get_short_description(self):
         """
