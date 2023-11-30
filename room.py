@@ -13,7 +13,8 @@ class Room:
         """
             Constructor method.
         :param description: Text description for this room
-        :param locked: Boolean that represents if a rooms is locked by card or not
+        :param locked: String that represents if a rooms is locked by card or other object
+        :param password: String that is the password to go in the room
         """
         self.description = description
         self.locked = locked
@@ -45,7 +46,7 @@ class Room:
 
         if guess == num:
             print("congratulations! you won!")
-            backpack.add_item(self.room_items["document"])
+            backpack.add_item(self.hidden_items["document"])
             print("A new item has been added to your backpack!")
             print("Check it to know where to look the key!")
             return True
@@ -78,23 +79,33 @@ class Room:
         self.hidden_items[item.item_name] = item
         return True
 
-    def can_enter(self, backpack, password = ""):
+    def can_enter(self, backpack, password = "", game_rooms = None):
         """
             Allow access to a room locked by object or password
         :param backpack: Backpack object
         :param next_room: Next room object
         :return: True to allow access or False when wrong password or object not in backpack
         """
+
         if self.locked is not None:
+            ##Get the office room items to know if the statue is there
+            office_items = game_rooms["office"]
             try:
                 if self.locked == "card" and "card" not in backpack.contents:
                     print("The object 'card' is needed to access this room")
                     raise NotInBackpackError("card", "Not in backpack")
+                
                 elif self.locked == "card2" and "card2" not in backpack.contents:
                     print("The object 'card2' is needed to access this room")
                     raise NotInBackpackError("card2", "Not in backpack")
+                
+                elif self.locked == "statue" and "statue" not in office_items.room_items:
+                    print("The statue is not pressing the button")
+                    return False
+                
                 else:
                     return True
+                
             except NotInBackpackError:
                 return False
 

@@ -41,10 +41,13 @@ class Backpack:
             Increase the backpack capacity
             :param backpack: Backpack object
         """
-        increase_value = self.contents[item]
-        self.capacity += increase_value.feature
-        print(f"The new backpack capacity is {self.capacity}")
-        return True
+        if item in self.contents:
+            increase_value = self.contents[item]
+            self.capacity += increase_value.feature
+            print(f"The new backpack capacity is {self.capacity}")
+            return True
+        else:
+            return False
 
     def get_number_of_items(self):
         """
@@ -58,8 +61,8 @@ class Backpack:
             Print all items in the backpack
         """
         print("Your items are:\n")
-        for item in self.contents:
-            print(f'{item}')
+        for item, feature in self.contents.items():
+            print(f'{item} --> description: {feature.feature}')
 
     def check_item(self, item):
         """Returns True if item is in backpack, False otherwise."""
