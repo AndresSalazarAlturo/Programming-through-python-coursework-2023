@@ -40,6 +40,7 @@ class Room:
             Create a basic guess the number puzzle, the user knows if the guess
             is too high or too low
             :param guess: user guess
+            :return: True when the user guess the number
         """
         random.seed(20)
         num = random.randint(1, 10)
@@ -56,6 +57,31 @@ class Room:
             print("Your guess is too low")
         else:
             print("nope, sorry. try again!")
+    
+    def process_mini_game(self, game_rooms):
+        """
+            Process the mini_game
+            :param game_rooms: Get the game rooms and access de dining_room object
+            :return: True or False depending if solve the mini_game
+        """
+        list_of_items = ["square", "triangle", "circle"]
+
+        ##shuffle the list order randomly
+        random.seed(10)
+        random.shuffle(list_of_items)
+        print(list_of_items, "--> solution")
+
+        dining_room_lock = game_rooms["dining_room"]
+        user_input = []
+        for i in range(1, len(list_of_items) + 1):
+            user_input.append(input(f"Type the object {i}: "))
+        if list_of_items == user_input:
+            print("you solve the puzzle")
+            dining_room_lock.locked = False
+            return False
+        else:
+            print("Try again")
+            return True
 
     def add_item_to_room(self, item):
         """
@@ -90,6 +116,7 @@ class Room:
         if self.locked is not None:
             ##Get the office room items to know if the statue is there
             office_items = game_rooms["office"]
+            dining_room_lock = game_rooms["dining_room"]
             try:
                 if self.locked == "card" and "card" not in backpack.contents:
                     print("The object 'card' is needed to access this room")
@@ -102,7 +129,11 @@ class Room:
                 elif self.locked == "statue" and "statue" not in office_items.room_items:
                     print("The statue is not pressing the button")
                     return False
-                
+
+                elif dining_room_lock.locked == True:
+                    print("The room is locked, solve the figures mini_game to access")
+                    return False
+
                 else:
                     return True
                 

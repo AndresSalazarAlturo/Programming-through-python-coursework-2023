@@ -48,6 +48,12 @@ class Backpack:
             return True
         else:
             return False
+        
+    def show_puzzle_items(self):
+        """
+            Show the items that are puzzles
+        """
+        pass
 
     def get_number_of_items(self):
         """

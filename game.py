@@ -38,7 +38,7 @@ class Game:
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.my_player.current_room = self.lab
+        self.my_player.current_room = self.kitchen
         ##Text to UI object
         self.textUI = TextUI()
 
@@ -72,7 +72,7 @@ class Game:
         ##Kitchen options
         self.stairs = Room("You are in the stairs")
         self.garden = Room("in the garden")
-        self.dining_room = Room("in the dining room")
+        self.dining_room = Room("in the dining room", locked = True)
 
         ##Stairs options
         self.basement = Room("You are in the basement")
@@ -158,6 +158,9 @@ class Game:
         self.puzzle = Item("puzzle", "is some puzzle", puzzle = "puzzle")
         self.document = Item("document", "the key could be in the basement")
 
+        ##Create minigames
+        self.mini_game = Item("mini_game", "solve the mini game!", puzzle = "organize")
+
         ##Create items for lab
         self.statue = Item("statue", "To press the button in the office that opens the kitchen door")
 
@@ -183,6 +186,9 @@ class Game:
         ##Add item to office
         self.office.add_item_to_room(self.stone)
         self.office.add_item_to_room(self.button)
+
+        ##Add mini_game to kitchen
+        self.kitchen.add_item_to_room(self.mini_game)
 
         ################################
         #####Initialize the backpack####
@@ -316,15 +322,36 @@ class Game:
                 self.textUI.print_to_textUI("The puzzle is not in the room or your backpack")
             else:
                 quit_puzzle = False
-                self.textUI.print_to_textUI("When solve the puzzle, and item will be added to your backpack")
+                self.textUI.print_to_textUI("When solve the puzzle, an item will be added to your backpack")
                 self.textUI.print_to_textUI("Be sure that you have enough space!")
                 while not quit_puzzle:
                     self.textUI.print_to_textUI("Solve the puzzle to continue")
                     self.textUI.print_to_textUI("Type 'back' to try the puzzle later")
-                    guess, word2 = self.textUI.get_command()                         # Returns a 2-tuple
-                    if guess == 'back':
-                        quit_puzzle = True
-                    quit_puzzle = self.my_player.current_room.solve_puzzle(int(guess), self.my_player.backpack)
+                    try:
+                        guess, word2 = self.textUI.get_command()                         # Returns a 2-tuple
+                        if guess == 'back':
+                            quit_puzzle = True
+                        quit_puzzle = self.my_player.current_room.solve_puzzle(int(guess), self.my_player.backpack)
+                    except ValueError:
+                        print("Do not know what you mean")
+
+        elif second_word == "mini_game":
+            ## If mini_game is not in the backpack or in the room, si not possible to do it
+            if (second_word not in self.my_player.backpack.contents) or (second_word not in self.my_player.current_room.room_items):
+                self.textUI.print_to_textUI("The mini_game is not in the room or your backpack")
+            else:
+                quit_mini_game = False
+                self.textUI.print_to_textUI("When solve the mini_game, the dining_room door will open\n")
+                while not quit_mini_game:
+                    if self.my_player.current_room.process_mini_game(game_rooms = self.game_rooms):
+                        self.textUI.print_to_textUI("Type 'back' to try the puzzle later\n Press any key to continue")
+                        keep_playing, word2 = self.textUI.get_command()
+                        if keep_playing == 'back':
+                            quit_mini_game = True
+                    else: 
+                        self.textUI.print_to_textUI("The dining_romm door is now open")
+                        self.textUI.print_lines()
+                        quit_mini_game = True
 
         ##Use pocket to increase backpack capacity
         elif second_word == "pocket":
@@ -334,6 +361,7 @@ class Game:
             else:
                 self.textUI.print_to_textUI(f'{second_word} not in backpack')
 
+        ##Use statue to press the button
         elif second_word == "statue":
             if self.my_player.backpack.check_item(second_word):
                 statue_object = self.my_player.backpack.contents[second_word]

@@ -5,6 +5,7 @@ class Item:
     def __init__(self, item, feature, puzzle = None):
         self.item_name = item
         self.feature = feature
+        self.puzzle = puzzle
 
     def get_item_description(self):
         """
