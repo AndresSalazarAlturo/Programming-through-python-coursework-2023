@@ -34,58 +34,6 @@ class Room:
         self.exits[direction] = neighbour
         return True
 
-    def solve_puzzle(self, guess, backpack):
-        """
-            Create a basic guess the number puzzle, the user knows if the guess
-            is too high or too low
-            :param guess: user guess
-            :param backpack: Players backpack - backpack object
-            :return: True when the user guess the number
-        """
-        random.seed(20)
-        num = random.randint(1, 10)
-
-        if guess == num:
-            print("congratulations! you won!")
-            backpack.add_item(self.hidden_items["document"])
-            print("A new item has been added to your backpack!")
-            print("Check it to know where to look the key!")
-            return True
-        
-        elif guess > num:
-            print("Your guess is too high")
-
-        elif guess < num:
-            print("Your guess is too low")
-
-        else:
-            print("nope, sorry. try again!")
-    
-    def process_mini_game(self, game_rooms):
-        """
-            Process the mini_game
-            :param game_rooms: Get the game rooms and access de dining_room object
-            :return: True or False depending if solve the mini_game
-        """
-        list_of_items = ["square", "triangle", "circle"]
-
-        ##shuffle the list order randomly
-        random.seed(10)
-        random.shuffle(list_of_items)
-        print(list_of_items, "--> solution")
-
-        dining_room_lock = game_rooms["dining_room"]
-        user_input = []
-        for i in range(1, len(list_of_items) + 1):
-            user_input.append(input(f"Type the object {i}: "))
-        if list_of_items == user_input:
-            print("you solve the puzzle")
-            dining_room_lock.locked = False
-            return False
-        else:
-            print("Try again")
-            return True
-
     def add_item_to_room(self, item):
         """
             Add the item to room_items that are stored in a dictionary.

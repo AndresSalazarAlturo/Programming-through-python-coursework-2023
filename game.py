@@ -38,7 +38,7 @@ class Game:
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.my_player.current_room = self.basement
+        self.my_player.current_room = self.kitchen
         ##Text to UI object
         self.textUI = TextUI()
 
@@ -339,7 +339,7 @@ class Game:
                         guess, word2 = self.textUI.get_command()                         # Returns a 2-tuple
                         if guess == 'back':
                             quit_puzzle = True
-                        quit_puzzle = self.my_player.current_room.solve_puzzle(int(guess), self.my_player.backpack)
+                        quit_puzzle = self.my_player.backpack.solve_puzzle(int(guess), self.my_player.current_room.hidden_items)
                     except ValueError:
                         print("Do not know what you mean")
 
@@ -351,7 +351,7 @@ class Game:
                 quit_mini_game = False
                 self.textUI.print_to_textUI("When solve the mini_game, the dining_room door will open\n")
                 while not quit_mini_game:
-                    if self.my_player.current_room.process_mini_game(game_rooms = self.game_rooms):
+                    if self.my_player.backpack.process_mini_game(game_rooms = self.game_rooms):
                         self.textUI.print_to_textUI("Type 'back' to try the puzzle later\n Press any key to continue")
                         keep_playing, word2 = self.textUI.get_command()
                         if keep_playing == 'back':
