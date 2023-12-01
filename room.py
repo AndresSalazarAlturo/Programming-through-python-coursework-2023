@@ -2,10 +2,9 @@
 Create a room described "description". Initially, it has no exits. The
 'description' is something like 'kitchen' or 'an open court yard'.
 """
-
+import random
 from src.my_exceptions import NotInBackpackError, WrongPassword, NotExistingRoom
 from src.text_ui import TextUI
-import random
 
 class Room:
 
@@ -40,6 +39,7 @@ class Room:
             Create a basic guess the number puzzle, the user knows if the guess
             is too high or too low
             :param guess: user guess
+            :param backpack: Players backpack - backpack object
             :return: True when the user guess the number
         """
         random.seed(20)
@@ -51,10 +51,13 @@ class Room:
             print("A new item has been added to your backpack!")
             print("Check it to know where to look the key!")
             return True
+        
         elif guess > num:
             print("Your guess is too high")
+
         elif guess < num:
             print("Your guess is too low")
+
         else:
             print("nope, sorry. try again!")
     

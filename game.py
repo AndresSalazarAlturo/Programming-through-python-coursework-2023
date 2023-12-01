@@ -38,7 +38,7 @@ class Game:
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.my_player.current_room = self.kitchen
+        self.my_player.current_room = self.basement
         ##Text to UI object
         self.textUI = TextUI()
 
@@ -79,7 +79,7 @@ class Game:
 
         ##Basement options
         self.laundry_room = Room("You are in the laundry room")
-        self.storage = Room("Ypu are in the storage")
+        self.storage = Room("You are in the storage")
 
         #########################################
         ####Now create the exits for each room###
@@ -167,6 +167,10 @@ class Game:
         ##Create items for office
         self.button = Item("button", "Keep it press to access the kitchen")
 
+        ##Create items for basement
+        self.operation_game = Item("operation_game", "Use it and solve the operations to get an item!")
+        self.garden_password = Item("garden_password", 1234)
+
         # Add items to cleaning room
         # self.cleaning_room.add_item_to_room(self.card)
         self.cleaning_room.add_item_to_room(self.code)
@@ -189,6 +193,10 @@ class Game:
 
         ##Add mini_game to kitchen
         self.kitchen.add_item_to_room(self.mini_game)
+
+        ##Add operation_game to basement
+        self.basement.add_item_to_room(self.operation_game)
+        self.basement.add_hidden_item_to_room(self.garden_password)
 
         ################################
         #####Initialize the backpack####
@@ -338,7 +346,7 @@ class Game:
         elif second_word == "mini_game":
             ## If mini_game is not in the backpack or in the room, si not possible to do it
             if (second_word not in self.my_player.backpack.contents) or (second_word not in self.my_player.current_room.room_items):
-                self.textUI.print_to_textUI("The mini_game is not in the room or your backpack")
+                self.textUI.print_to_textUI("The mini_game is not in your backpack")
             else:
                 quit_mini_game = False
                 self.textUI.print_to_textUI("When solve the mini_game, the dining_room door will open\n")
@@ -353,6 +361,14 @@ class Game:
                         self.textUI.print_lines()
                         quit_mini_game = True
 
+        ##Use operation item
+        elif second_word == "operation_game":
+            ## If mini_game is not in the backpack or in the room, si not possible to do it
+            if (second_word not in self.my_player.backpack.contents) or (second_word not in self.my_player.current_room.room_items):
+                self.textUI.print_to_textUI("The operation_game is not in your backpack")
+            else:
+                self.my_player.backpack.process_operation_game(self.my_player.current_room.hidden_items)
+
         ##Use pocket to increase backpack capacity
         elif second_word == "pocket":
             if self.my_player.backpack.increase_backpack_capacity(second_word):
@@ -366,7 +382,7 @@ class Game:
             if self.my_player.backpack.check_item(second_word):
                 statue_object = self.my_player.backpack.contents[second_word]
                 self.my_player.current_room.add_item_to_room(statue_object)
-                ##Delete the statue from the backpack
+                ##Remove the statue from the backpack
                 self.my_player.backpack.remove_item(second_word)
                 self.textUI.print_to_textUI(f"the {second_word} is pressing the button")
 
