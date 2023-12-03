@@ -2,6 +2,9 @@
 A simple text based User Interface (UI) for the Adventure World game.
 """
 
+
+import textwrap
+
 class TextUI:
 
     def __init__(self):
@@ -32,9 +35,26 @@ class TextUI:
             Displays a welcome message.
         :return: None
         """
-        self.print_to_textUI("You are lost. You are alone. You wander")
-        self.print_to_textUI("around the deserted complex.")
-        self.print_to_textUI("")
+        # self.print_to_textUI("You are lost. You are alone. You wander")
+        # self.print_to_textUI("around the deserted complex.")
+        # self.print_to_textUI("")
+        self.print_to_textUI("""
+        
+        In the eerie silence of a long-forgotten research complex, shadows danced menacingly 
+        across abandoned hallways. A lone survivor of an ill-fated expedition, found 
+        himself trapped within its labyrinthine corridors. As he navigated through the dimly 
+        lit chambers, flickering lights revealed cryptic symbols etched on the walls, hinting 
+        at an otherworldly experiment gone awry. 
+        
+        The air was thick with an unsettling tension,
+        and distant echoes of unseen horrors amplified the sense of isolation. Your only 
+        companions are the haunting memories of your colleagues and the lingering uncertainty 
+        of the complex's malevolent secrets. Unraveling the mystery became not just a quest for 
+        survival, but a descent into the unknown depths of a forsaken realm.
+
+        You do not want to perish here, alone and maybe part of an perverse experiment so you move
+        and look your way out of the small room.
+                                """)
 
     def show_posible_movements(self):
         """
@@ -42,19 +62,48 @@ class TextUI:
         """
         return ['north, south, west, east']
 
+    def guess_puzzle_info(self):
+        """
+            Show the information related to guess the number puzzle
+            and some game context
+        """
+        self.print_to_textUI("""
+
+        Let's play a little guess game, is simple you just have to type the number of years you are
+        going to spend here trying to escape to finally be part of our experimets...
+
+        How to play:
+        Type a number from 1 to 30, you are going to know if your guess is too high or too low.
+        When solve the puzzle, an item will be added to your backpack.
+        Be sure that you have enough space!
+                            """)
+        
+    def mini_game_info(self):
+        """
+            Show the information related to mini_game in laundry room
+            and some game context
+        """
+        self.print_to_textUI("""
+
+        You have come a long way in escaping from our experiment complex, of course it would be unfair 
+        to a little mouse like you not to give you the slightest chance to escape. Therefore, if you 
+        solve the following mini_game you will have more information to find a way out, although you 
+        know you will never find it.
+        
+        If you manage to solve the game little mouse, the dining_room door will open, good luck.
+
+        How to play:
+        Order the figures in the correct order, the answer is random so try as many combinations as you
+        can. The figures are: triangle, square, circle. Please type the exact name of each figure, however
+        you have all the time you need and wrong answers won't affect your escape!
+                            """)
+
     def show_command_words(self):
         """
             Show a list of available commands.
         :return: None
         """
         return ['help', 'go', 'current room', 'explore', 'pick', 'items', 'use', 'remove','quit']
-        
-    def objetives(self):
-        """
-            Show the current objetive and change when its done to the next one
-        """
-        
-        pass
 
     def print_lines(self):
         """

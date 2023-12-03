@@ -2,7 +2,6 @@
 Create a room described "description". Initially, it has no exits. The
 'description' is something like 'kitchen' or 'an open court yard'.
 """
-import random
 from src.my_exceptions import NotInBackpackError, WrongPassword, NotExistingRoom
 from src.text_ui import TextUI
 
@@ -39,7 +38,7 @@ class Room:
             Add the item to room_items that are stored in a dictionary.
             All item are objects from item class.
         :param item: The item in the room
-        :return: None
+        :return: True
         """
 
         self.room_items[item.item_name] = item
@@ -60,7 +59,7 @@ class Room:
             Add the hidden item to room_items that are stored in a dictionary.
             All item are objects from item class.
         :param item: The item in the room
-        :return: None
+        :return: True
         """
 
         self.hidden_items[item.item_name] = item
@@ -143,7 +142,7 @@ class Room:
         """
             Print the items in the room
         """
-        print(f"The items are: ")
+        print(f"The items are: \n")
         for item, feature in self.room_items.items():
             print(f'{item} --> description: {feature.feature}')
 
