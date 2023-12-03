@@ -1,5 +1,6 @@
 import time
 import random
+import os
 from src.my_exceptions import NotInBackpackError, FullBackpackError
 
 class Backpack:
@@ -51,10 +52,10 @@ class Backpack:
         else:
             return False
         
-    def process_operation_game(self, hidden_items):
+    def process_operation_game(self, dining_room_item):
         """
             Process the operation game, create the random numbers and the timer
-            :param backpack: Players backpack - backpack object
+            :param hidden_items: Dictionary with the current room hidden objects
             :return: True if solve the questions in time, False if not
         """
         cnt = 0 
@@ -65,6 +66,8 @@ class Backpack:
         quit_operation_game = True
         print("Solve 2 questions to get the object")
         print("Type '000' to quit the game")
+
+        dining_room_lock = dining_room_item["dining_room"]
 
         while quit_operation_game:
 
@@ -89,8 +92,9 @@ class Backpack:
                 print("Correct! Your score is now:", cnt)
                 if cnt == number_of_operations:
                     print("You answer correctly all the questions!")
-                    self.add_item(hidden_items["garden_password"])
-                    print("A new item has been added to your backpack!")
+                    ##Open the dining_room door
+                    dining_room_lock.locked = False
+                    print("The dining_room door is now open")
                     quit_operation_game = False
 
             elif user_answer == 000:
@@ -100,6 +104,68 @@ class Backpack:
                 print("Wrong answer. Try again.")
 
         print("Final score: ", cnt)
+
+    def process_hangman_game(self, hidden_items):
+        """
+            Process the hangman game.
+            :param hidden_items: Dictionary with the current room hidden objects
+            :return: True if solve the questions in time, False if not
+        """
+
+        filepath="./src/data.txt"
+
+        with open(filepath, "r", encoding="utf-8") as f:
+        
+            words = []
+            for word in f:
+                words.append(word.strip().upper())
+
+        my_word = random.choice(words)
+        my_word_spaces = [letter for letter in my_word]
+        my_word_spaces_underscores = ["_"] * len(my_word)
+        word_dict = {}
+
+        for key, value in enumerate(my_word):
+            if not word_dict.get(value):
+                word_dict[value] = []
+            word_dict[value].append(key)
+
+        while (True):
+            os.system("cls")
+            print("¡Guess the word!")
+
+            print(my_word)
+
+            for under_score in my_word_spaces_underscores:
+                print(under_score + " ", end = "")
+            print("\n")
+            
+            try:
+                letter = input("Try any letter \n").strip().upper()
+            except ValueError:
+                print("Just letter please")
+
+            if letter in my_word_spaces:
+                for key in word_dict[letter]:
+                    my_word_spaces_underscores[key] = letter
+            elif letter == my_word:
+                os.system("cls")
+                print("¡You won! The word was ", my_word)
+                print("You answer correctly all the questions!")
+                self.add_item(hidden_items["key"])
+                print("A new item has been added to your backpack!")
+                break
+
+            elif letter == "BACK":
+                break
+
+            if "_" not in my_word_spaces_underscores:
+                os.system("cls") 
+                print("¡You won! The word was ", my_word)
+                print("You answer correctly all the questions!")
+                self.add_item(hidden_items["key"])
+                print("A new item has been added to your backpack!")
+                break
 
     def solve_puzzle(self, guess, hidden_items):
         """
@@ -114,7 +180,7 @@ class Backpack:
 
         if guess == num:
             print("congratulations! you won!")
-            self.add_item(hidden_items["document"])
+            self.add_item(hidden_items["document1"])
             print("A new item has been added to your backpack!")
             print("Check it to know where to look the key!")
             return True
@@ -128,9 +194,10 @@ class Backpack:
         else:
             print("nope, sorry. try again!")
 
-    def process_mini_game(self, game_rooms):
+    def process_mini_game(self, hidden_items):
         """
-            Process the mini_game
+            Process the mini_game - The game consist in introduce in correct order the figures to
+            unlock the dining room
             :param game_rooms: Get the game rooms and access de dining_room object
             :return: True or False depending if solve the mini_game
         """
@@ -141,13 +208,13 @@ class Backpack:
         random.shuffle(list_of_items)
         print(list_of_items, "--> solution")
 
-        dining_room_lock = game_rooms["dining_room"]
         user_input = []
         for i in range(1, len(list_of_items) + 1):
             user_input.append(input(f"Type the object {i}: "))
         if list_of_items == user_input:
             print("you solve the puzzle")
-            dining_room_lock.locked = False
+            ##Add the laundry_password item to backpack
+            self.add_item(hidden_items["laundry_password"])
             return False
         else:
             print("Try again")

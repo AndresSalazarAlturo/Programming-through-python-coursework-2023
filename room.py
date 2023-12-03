@@ -45,6 +45,16 @@ class Room:
         self.room_items[item.item_name] = item
         return True
     
+    def remove_item_to_room(self, item):
+        """
+            Remove an item to room. Is used when the player pick an item from the room
+        :param item: The item picked by the player
+        :return: None
+        """
+        self.room_items.pop(item)
+        print(f"{item} is no longer in the room")
+
+    
     def add_hidden_item_to_room(self, item):
         """
             Add the hidden item to room_items that are stored in a dictionary.
@@ -56,7 +66,7 @@ class Room:
         self.hidden_items[item.item_name] = item
         return True
 
-    def can_enter(self, backpack, password = "", game_rooms = None):
+    def can_enter(self, backpack, password = "", game_rooms = None, next_room = None, dining_room_lock = None):
         """
             Allow access to a room locked by object or password
         :param backpack: Backpack object
@@ -67,7 +77,7 @@ class Room:
         if self.locked is not None:
             ##Get the office room items to know if the statue is there
             office_items = game_rooms["office"]
-            dining_room_lock = game_rooms["dining_room"]
+            dining_room_lock = dining_room_lock["dining_room"]
             try:
                 if self.locked == "card" and "card" not in backpack.contents:
                     print("The object 'card' is needed to access this room")
@@ -81,7 +91,7 @@ class Room:
                     print("The statue is not pressing the button")
                     return False
 
-                elif dining_room_lock.locked == True:
+                elif dining_room_lock.locked == True and next_room == dining_room_lock:
                     print("The room is locked, solve the figures mini_game to access")
                     return False
 

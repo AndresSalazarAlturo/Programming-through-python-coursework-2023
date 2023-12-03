@@ -38,7 +38,7 @@ class Game:
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.my_player.current_room = self.kitchen
+        self.my_player.current_room = self.first_room
         ##Text to UI object
         self.textUI = TextUI()
 
@@ -62,16 +62,16 @@ class Game:
         self.security_room = Room("in the security room", password='1234')
 
         ##Initialize corridor2
-        self.corridor2 = Room("in a corridor2")
+        self.corridor2 = Room("in a corridor2", locked="card")
 
         ##Rooms option to corridor2
-        self.lab = Room("in a computing lab", password='4321')
-        self.office = Room("in the computing admin office")
+        self.lab = Room("in a computing lab", password="4321")
+        self.office = Room("in the computing admin office", locked="card2")
         self.kitchen = Room("in the kitchen", locked = "statue")
 
         ##Kitchen options
         self.stairs = Room("You are in the stairs")
-        self.garden = Room("in the garden")
+        self.garden = Room("in the garden", password="123456")
         self.dining_room = Room("in the dining room", locked = True)
 
         ##Stairs options
@@ -80,6 +80,9 @@ class Game:
         ##Basement options
         self.laundry_room = Room("You are in the laundry room")
         self.storage = Room("You are in the storage")
+
+        ##Dungeon options
+        self.dungeon = Room("You are in the dangeon, just can go out using the stone!! Guess the word to get the key!!")
 
         #########################################
         ####Now create the exits for each room###
@@ -134,6 +137,7 @@ class Game:
         ##Basement posibilities
         self.basement.set_exit("west", self.storage)
         self.basement.set_exit("east", self.laundry_room)
+        self.basement.set_exit("south", self.stairs)
 
         ##Storage posibilities
         self.storage.set_exit("east", self.basement)
@@ -146,64 +150,86 @@ class Game:
         ###############################
 
         # Create items for cleaning room
-        self.card = Item("card", "could open a door")
-        self.code = Item("code", 1234)
-        self.stone = Item("stone", "allow teleport")
-        self.pocket = Item("pocket", 1)
+        self.card2 = Item("card2", "could open another door")
+        self.code = Item("code", "could work as password for security room, 1234")
 
         ## Create items for security room
-        self.card2 = Item("card2", "could open another door")
-
-        ##Create one item that is a puzzle
-        self.puzzle = Item("puzzle", "is some puzzle", puzzle = "puzzle")
-        self.document = Item("document", "the key could be in the basement")
-
-        ##Create minigames
-        self.mini_game = Item("mini_game", "solve the mini game!", puzzle = "organize")
+        self.card = Item("card", "could open a door, keep it in backpack")
 
         ##Create items for lab
+        self.pocket = Item("pocket", 3)
         self.statue = Item("statue", "To press the button in the office that opens the kitchen door")
+        self.puzzle = Item("puzzle", "is some puzzle", puzzle = "puzzle")
+        self.document1 = Item("document1", "the key could be in the basement")
 
         ##Create items for office
         self.button = Item("button", "Keep it press to access the kitchen")
+        self.document2 = Item("document2", "The laboratory password is 4321")
+
+        ##Create items for kitchen
+        self.document3 = Item("document3", "The stairs lead to the basement")
+
+        ##Create items for garden
+        self.stone = Item("stone", "allow teleport")
+
+        ##Create items for dining room
+        self.operation_game = Item("operation_game", "Use it and solve the operations to get an item!")
 
         ##Create items for basement
-        self.operation_game = Item("operation_game", "Use it and solve the operations to get an item!")
-        self.garden_password = Item("garden_password", 1234)
+        self.mini_game = Item("mini_game", "solve the mini game!", puzzle = "organize")
+        self.storage_password = Item("storage_password", "The storage password is 1221")
+
+        ##Create items for laundry room
+        self.laundry_room_password = Item("laundry_password", "The laundry room passwword is 54321")
+
+        ##Create items for storage room
+        self.garden_password = Item("garden_password", "the garden password is 123456")
+
+        ##Create items for dungeon
+        self.key = Item("key", "Use the key to open the final door and escape")
+        self.hungman_game = Item("hangman_game", "Play the game to get the final key!")
 
         # Add items to cleaning room
-        # self.cleaning_room.add_item_to_room(self.card)
         self.cleaning_room.add_item_to_room(self.code)
-        self.cleaning_room.add_item_to_room(self.pocket)
+        self.cleaning_room.add_item_to_room(self.card2)
 
         # Add items to security room
-        self.security_room.add_item_to_room(self.card2)
+        self.security_room.add_item_to_room(self.card)
 
-        ##Add puzzle to lab
-        self.lab.add_item_to_room(self.puzzle)
         ##Add item to lab
         self.lab.add_item_to_room(self.statue)
-        self.lab.add_item_to_room(self.card)
+        self.lab.add_item_to_room(self.puzzle)
+        self.lab.add_item_to_room(self.pocket)
         ##Add hidden document to lab
-        self.lab.add_hidden_item_to_room(self.document)
+        self.lab.add_hidden_item_to_room(self.document1)
 
         ##Add item to office
-        self.office.add_item_to_room(self.stone)
         self.office.add_item_to_room(self.button)
+        self.office.add_item_to_room(self.document2)
 
-        ##Add mini_game to kitchen
-        self.kitchen.add_item_to_room(self.mini_game)
+        ##Add item to kitchen
+        self.kitchen.add_item_to_room(self.document3)
 
-        ##Add operation_game to basement
-        self.basement.add_item_to_room(self.operation_game)
-        self.basement.add_hidden_item_to_room(self.garden_password)
+        ##Add item to garden
+        self.garden.add_item_to_room(self.stone)
+
+        ##Add items to laundry room
+        self.laundry_room.add_item_to_room(self.mini_game)
+        self.laundry_room.add_hidden_item_to_room(self.laundry_room_password)
+
+        ##Add items to storage room
+        self.storage.add_item_to_room(self.operation_game)
+
+        ##Add items to dungeon
+        self.dungeon.add_hidden_item_to_room(self.key)
+        self.dungeon.add_item_to_room(self.hungman_game)
 
         ################################
         #####Initialize the backpack####
         ################################
 
         ##Create the backpack
-        self.backpack = Backpack(2)
+        self.backpack = Backpack(4)
 
         ##Assign backpack to player
         self.my_player.backpack = self.backpack
@@ -211,8 +237,12 @@ class Game:
         ##Create a dictionary with all positions
         self.game_rooms = {"first_room":self.first_room, "corridor1":self.corridor1, "cleaning_room":self.cleaning_room,"security_room":self.security_room,
                            "corridor2":self.corridor2, "computing_lab":self.lab, "office":self.office, "kitchen":self.kitchen,
-                           "stairs":self.stairs, "garden":self.garden, "dining_room":self.dining_room,
-                           "basement":self.basement, "storage_room":self.storage, "laundry_room":self.laundry_room}
+                           "stairs":self.stairs, "garden":self.garden,
+                           "basement":self.basement, "storage_room":self.storage, "laundry_room":self.laundry_room,
+                           "dungeon":self.dungeon}
+
+        ##Dining room item to unlock the door
+        self.dining_room_item = {"dining_room":self.dining_room}
 
     def play(self):
         """
@@ -326,7 +356,7 @@ class Game:
         ##Use the puzzle
         elif second_word == "puzzle":
             ## If puzzle is not in the backpack or in the room, si not possible to do it
-            if (second_word not in self.my_player.backpack.contents) or (second_word not in self.my_player.current_room.room_items):
+            if (second_word not in self.my_player.backpack.contents):
                 self.textUI.print_to_textUI("The puzzle is not in the room or your backpack")
             else:
                 quit_puzzle = False
@@ -339,35 +369,49 @@ class Game:
                         guess, word2 = self.textUI.get_command()                         # Returns a 2-tuple
                         if guess == 'back':
                             quit_puzzle = True
-                        quit_puzzle = self.my_player.backpack.solve_puzzle(int(guess), self.my_player.current_room.hidden_items)
+                        if self.my_player.backpack.solve_puzzle(int(guess), self.my_player.current_room.hidden_items):
+                            ##Delete the pocket from the backpack
+                            self.my_player.backpack.remove_item(second_word)
+                            quit_puzzle = True
                     except ValueError:
                         print("Do not know what you mean")
 
         elif second_word == "mini_game":
             ## If mini_game is not in the backpack or in the room, si not possible to do it
-            if (second_word not in self.my_player.backpack.contents) or (second_word not in self.my_player.current_room.room_items):
+            if (second_word not in self.my_player.backpack.contents):
                 self.textUI.print_to_textUI("The mini_game is not in your backpack")
             else:
                 quit_mini_game = False
                 self.textUI.print_to_textUI("When solve the mini_game, the dining_room door will open\n")
                 while not quit_mini_game:
-                    if self.my_player.backpack.process_mini_game(game_rooms = self.game_rooms):
+                    if self.my_player.backpack.process_mini_game(self.my_player.current_room.hidden_items):
                         self.textUI.print_to_textUI("Type 'back' to try the puzzle later\n Press any key to continue")
                         keep_playing, word2 = self.textUI.get_command()
                         if keep_playing == 'back':
                             quit_mini_game = True
                     else: 
-                        self.textUI.print_to_textUI("The dining_romm door is now open")
+                        self.textUI.print_to_textUI("The laundry room password is in you backpack")
                         self.textUI.print_lines()
                         quit_mini_game = True
+
+        elif second_word == "hangman_game":
+            ## If mini_game is not in the backpack or in the room, si not possible to do it
+            if (second_word not in self.my_player.backpack.contents):
+                self.textUI.print_to_textUI("The hangman_game is not in your backpack")
+            else:
+                self.my_player.backpack.process_hangman_game(self.my_player.current_room.hidden_items)
+                ##Remove the hangman_game from the backpack
+                self.my_player.backpack.remove_item(second_word)
+                ##Add hangman_game to dungeon again in case the user want to play again or drop the key
+                self.lab.add_item_to_room(self.statue)
 
         ##Use operation item
         elif second_word == "operation_game":
             ## If mini_game is not in the backpack or in the room, si not possible to do it
-            if (second_word not in self.my_player.backpack.contents) or (second_word not in self.my_player.current_room.room_items):
+            if (second_word not in self.my_player.backpack.contents):
                 self.textUI.print_to_textUI("The operation_game is not in your backpack")
             else:
-                self.my_player.backpack.process_operation_game(self.my_player.current_room.hidden_items)
+                self.my_player.backpack.process_operation_game(self.dining_room_item)
 
         ##Use pocket to increase backpack capacity
         elif second_word == "pocket":
@@ -385,6 +429,8 @@ class Game:
                 ##Remove the statue from the backpack
                 self.my_player.backpack.remove_item(second_word)
                 self.textUI.print_to_textUI(f"the {second_word} is pressing the button")
+                ##Add statue to lab again in case the user use the statue in the wrong room
+                self.lab.add_item_to_room(self.statue)
 
             else:
                 self.textUI.print_to_textUI(f"{second_word} not in backpack")
@@ -425,6 +471,8 @@ class Game:
             try:
                 if (self.my_player.backpack.add_item(self.my_player.current_room.room_items[second_word])):
                     self.textUI.print_to_textUI(f"{second_word} has been added to you back pack")
+                    ##Delete the picked item from room_items
+                    self.my_player.current_room.remove_item_to_room(second_word)
                 else:
                     self.textUI.print_to_textUI("Try to remove an item")
             except KeyError:
@@ -463,7 +511,7 @@ class Game:
             ## Check if the room is locked
             if next_room.locked is not None:
                 ## Go inside the room if does not require card, password and it was typed properly
-                if next_room.can_enter(self.my_player.backpack, game_rooms = self.game_rooms):
+                if next_room.can_enter(self.my_player.backpack, game_rooms = self.game_rooms, next_room = next_room, dining_room_lock = self.dining_room_item):
                     self.my_player.current_room = next_room
                     self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
                     return
