@@ -38,7 +38,7 @@ class Game:
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.my_player.current_room = self.first_room
+        self.my_player.current_room = self.laundry_room
         ##Text to UI object
         self.textUI = TextUI()
 
@@ -166,7 +166,7 @@ class Game:
         ##Create items for lab
         self.pocket = Item("pocket", 3)
         self.statue = Item("statue", "To press the button in the office that opens the kitchen door")
-        self.puzzle = Item("puzzle", "Guess the numbr puzzle")
+        self.puzzle = Item("puzzle", "Guess the number puzzle")
         self.document1 = Item("document1", """
         To use the pocket, pick it up and use the command 'use' + 'pocket' and increse your backpack capacity. 
         You should pick the pocket and use it before pick another items, your backpack capacity is just 3!.
@@ -287,7 +287,7 @@ class Game:
         ################################
 
         ##Create the backpack
-        self.backpack = Backpack(4)
+        self.backpack = Backpack(3)
 
         ##Assign backpack to player
         self.my_player.backpack = self.backpack
@@ -459,11 +459,9 @@ class Game:
             if (second_word not in self.my_player.backpack.contents):
                 self.textUI.print_to_textUI("The hangman_game is not in your backpack")
             else:
-                self.my_player.backpack.process_hangman_game(self.my_player.current_room.hidden_items)
-                ##Remove the hangman_game from the backpack
-                self.my_player.backpack.remove_item(second_word)
-                ##Add hangman_game to dungeon again in case the user want to play again or drop the key
-                self.lab.add_item_to_room(self.statue)
+                if self.my_player.backpack.process_hangman_game(self.my_player.current_room.hidden_items):
+                    ##Remove the hangman_game from the backpack
+                    self.my_player.backpack.remove_item(second_word)
 
         ##Use operation item
         elif second_word == "operation_game":
@@ -475,8 +473,10 @@ class Game:
                 self.textUI.operation_game_info()
                 start_game, word2 = self.textUI.get_command()
                 if start_game == 'start':
-                    self.my_player.backpack.process_operation_game(self.game_rooms)
-                    self.textUI.print_lines()
+                    if self.my_player.backpack.process_operation_game(self.game_rooms):
+                        self.textUI.print_lines()
+                        ##Remove the operation_game from the backpack
+                        self.my_player.backpack.remove_item(second_word)
                 else:
                     self.textUI.print_to_textUI("Remember to solve the operation_game to open the dining_room door")
                     self.textUI.print_lines()
@@ -526,9 +526,12 @@ class Game:
             self.textUI.print_to_textUI("Remove what item?")
             return
         
-        ##Get the potential deleted object
-        object_to_remove = self.my_player.backpack.contents[second_word]
-        
+        try:
+            ##Get the potential deleted object
+            object_to_remove = self.my_player.backpack.contents[second_word]
+        except KeyError:
+            object_to_remove = None
+
         if self.my_player.backpack.remove_item(second_word) == True:
             self.textUI.print_to_textUI(f"{second_word} was remove from your backpack")
             ##Add the remove item to the current room

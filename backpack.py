@@ -97,6 +97,7 @@ class Backpack:
             if time.time() - start_time > timeout:
                 print("Time is up! You took too long to answer")
                 quit_operation_game = False
+                return False
 
             if user_answer == str_correct_answer:
                 cnt += 1
@@ -107,12 +108,15 @@ class Backpack:
                     dining_room_lock.locked = False
                     print("The dining_room door is now open")
                     quit_operation_game = False
+                    return True
 
             elif user_answer == "back":
                 quit_operation_game = False
+                return False
 
             else:
                 print("Wrong answer. Try again.")
+                return False
 
         print("Final score: ", cnt)
 
@@ -142,18 +146,19 @@ class Backpack:
                 word_dict[value] = []
             word_dict[value].append(key)
 
-        quit_operation_game = True
+        quit_hangman_game = True
 
-        while quit_operation_game:
+        while quit_hangman_game:
             os.system("cls")
             print("¡Guess the word!")
 
+            ##Print solution to test
             print(my_word)
 
             for under_score in my_word_spaces_underscores:
                 print(under_score + " ", end = "")
             print("\n")
-            
+
             try:
                 letter = input("Try any letter \n").strip().upper()
             except ValueError:
@@ -169,10 +174,12 @@ class Backpack:
                 print("You answer correctly all the questions!")
                 self.add_item(hidden_items["key"])
                 print("A new item has been added to your backpack!")
-                quit_operation_game = False
+                quit_hangman_game = False
+                return True
 
             elif letter == "BACK":
-                quit_operation_game = False
+                quit_hangman_game = False
+                return False
 
             if "_" not in my_word_spaces_underscores:
                 os.system("cls") 
@@ -180,7 +187,8 @@ class Backpack:
                 print("You answer correctly all the questions!")
                 self.add_item(hidden_items["key"])
                 print("A new item has been added to your backpack!")
-                quit_operation_game = False
+                quit_hangman_game = False
+                return True
 
     def solve_puzzle(self, guess, hidden_items):
         """
