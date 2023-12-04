@@ -38,7 +38,7 @@ class Game:
         ##Set up all rooms and objects
         self.create_rooms()
         ##Initial position
-        self.my_player.current_room = self.laundry_room
+        self.my_player.current_room = self.first_room
         ##Text to UI object
         self.textUI = TextUI()
 
@@ -85,7 +85,7 @@ class Game:
         self.dungeon = Room("You are in the dangeon, just can go out using the stone!! Guess the word to get the key!!")
 
         ##Exit!!
-        self.exit = Room("exit", locked="key")
+        self.exit = Room("exit", locked = "key")
 
         #########################################
         ####Now create the exits for each room###
@@ -326,6 +326,9 @@ class Game:
             self.textUI.print_lines()
             command = self.textUI.get_command()  # Returns a 2-tuple
             finished = self.process_command(command)
+            if self.my_player.current_room == self.exit:
+                self.textUI.final_context()
+                finished = True
         self.textUI.print_to_textUI("Thank you for playing!")
 
     def process_command(self, command):
