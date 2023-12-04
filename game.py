@@ -84,6 +84,9 @@ class Game:
         ##Dungeon options
         self.dungeon = Room("You are in the dangeon, just can go out using the stone!! Guess the word to get the key!!")
 
+        ##Exit!!
+        self.exit = Room("exit", locked="key")
+
         #########################################
         ####Now create the exits for each room###
         #########################################
@@ -133,6 +136,7 @@ class Game:
 
         ##Dining room posibilities
         self.dining_room.set_exit("west", self.kitchen)
+        self.dining_room.set_exit("east", self.exit)
 
         ##Basement posibilities
         self.basement.set_exit("west", self.storage)
@@ -144,6 +148,9 @@ class Game:
 
         ##Laundry room posibilities
         self.laundry_room.set_exit("west", self.basement)
+
+        ##Exit
+        self.exit.set_exit("west", self.dining_room)
 
         ###############################
         #####Initialize the objects####
@@ -159,39 +166,77 @@ class Game:
         ##Create items for lab
         self.pocket = Item("pocket", 3)
         self.statue = Item("statue", "To press the button in the office that opens the kitchen door")
-        self.puzzle = Item("puzzle", "Is some puzzle")
-        self.document1 = Item("document1", "To use the pocket, pick it up and use the command 'use' + 'pocket' and increse your backpack capacity\n To use interact with the puzzle pick it up ande use the command 'use' + 'puzzle'")
+        self.puzzle = Item("puzzle", "Guess the numbr puzzle")
+        self.document1 = Item("document1", """
+        To use the pocket, pick it up and use the command 'use' + 'pocket' and increse your backpack capacity. 
+        You should pick the pocket and use it before pick another items, your backpack capacity is just 3!.
+        
+        Tip: To use interact with the puzzle pick it up and use the command 'use' + 'puzzle'
+        Tip: Remember you can remove items from your backpack with the command 'remove' + 'object_to_remove'
+                              """)
         self.document2 = Item("document2", "The key could be in the basement")
 
         ##Create items for office
         self.button = Item("button", "Keep it press to access the kitchen")
-        self.document3 = Item("document3", "The laboratory password is 4321. To use the statue and press the button\n use the command 'use' + 'statue'")
+        self.document3 = Item("document3", """
+        The laboratory password is 4321. To use the statue and press the button 
+        use the command 'use' + 'statue'
+                              """)
 
         ##Create items for kitchen
         self.document4 = Item("document4", "The stairs lead to the basement")
 
         ##Create items for garden
         self.stone = Item("stone", "Allow teleport")
+        self.document8 = Item("document8", """
+        The garden is everything but a beautiful garden, looks like a junkyard there are lots of old clothes
+        all around the place. The plants look strange too, like angry and dark green, they do not have
+        eyes but you can feel that they look at you and laugh...
+        
+        In the middle there is a stone, look like a diamond, seems to be the object that could help you to escape.
+
+        Tip: To use the stone, use the command 'use' + 'stone', then type the room you want to go. E.g. 'dungeon'.
+        """)
 
         ##Create items for dining room
         self.operation_game = Item("operation_game", "Use it and solve the operations to get an item!")
 
         ##Create items for basement
-        self.mini_game = Item("mini_game", "Solve the mini game!")
+        self.mini_game = Item("mini_game", "Organise the figures mini_game, solve it and get an item!")
 
         ##Create items for laundry room
         self.storage_password = Item("storage_password", "The storage password is 1221")
-        self.document5 = Item("document5", "To interact with the mini_game. Pick it up and use command 'use' + 'mini_game'")
+        self.document5 = Item("document5", """
+        To interact with the mini_game. Pick it up and use command 'use' + 'mini_game'
+        
+        Tip: To pick the mini_game remember to use the command 'pick' + 'mini_game'.
+                              """)
 
         ##Create items for storage room
         self.garden_password = Item("garden_password", "The garden password is 123456")
+        self.document6 = Item("document6", "To interact with the operation_game. Pick it up and use command 'use' + 'operation_game'\n")
 
         ##Create items for dungeon
         self.key = Item("key", "Use the key to open the final door and escape")
         self.hungman_game = Item("hangman_game", "Play the game to get the final key!")
+        self.document9 = Item("document9", """
+        You are in a strange place, is like jail, is all wet and smells like sulfur, the walls are made of some type of rock. 
+        In one corner there is a skeleton handcuffed and tied to a chain in the ceiling.
+        There is an item in the room, some game, you should pick it up and play it, could help you to not end like our friend
+        in the corner.
+
+        Tip: Guess the word to win the key and escape! You can type any letter and if you know the answer type the full word.
+
+        Tip: To use the hangman_game, pick it using command 'pick' + 'hangman_game' and use the command 'use' + 'hangman_game'.
+                              """)
 
         ##Create items for dining_room
-        self.document6 = Item("document6", "Use the stone, go to the dungeon, win the game and get the key to escape!!")
+        self.document7 = Item("document7", """
+        Use the stone, go to the dungeon, win the game and get the key to escape!!
+        The stone is in the garden.
+        
+        Tip: To use the stone, use the command 'use' + 'stone', then type the room you want to go. E.g. 'dungeon'
+                              """)
 
         # Add items to cleaning room
         self.cleaning_room.add_item_to_room(self.code)
@@ -217,6 +262,7 @@ class Game:
 
         ##Add item to garden
         self.garden.add_item_to_room(self.stone)
+        self.garden.add_item_to_room(self.document8)
 
         ##Add items to laundry room
         self.laundry_room.add_item_to_room(self.mini_game)
@@ -226,13 +272,15 @@ class Game:
         ##Add items to storage room
         self.storage.add_item_to_room(self.operation_game)
         self.storage.add_item_to_room(self.garden_password)
+        self.storage.add_item_to_room(self.document6)
 
         ##Add item to dining_room
-        self.dining_room.add_item_to_room(self.document6)
+        self.dining_room.add_item_to_room(self.document7)
 
         ##Add items to dungeon
         self.dungeon.add_hidden_item_to_room(self.key)
         self.dungeon.add_item_to_room(self.hungman_game)
+        self.dungeon.add_item_to_room(self.document9)
 
         ################################
         #####Initialize the backpack####
@@ -247,12 +295,12 @@ class Game:
         ##Create a dictionary with all positions
         self.game_rooms = {"first_room":self.first_room, "corridor1":self.corridor1, "cleaning_room":self.cleaning_room,"security_room":self.security_room,
                            "corridor2":self.corridor2, "computing_lab":self.lab, "office":self.office, "kitchen":self.kitchen,
-                           "stairs":self.stairs, "garden":self.garden,
+                           "stairs":self.stairs, "garden":self.garden, "dining_room":self.dining_room,
                            "basement":self.basement, "storage_room":self.storage, "laundry_room":self.laundry_room,
                            "dungeon":self.dungeon}
 
         ##Dining room item to unlock the door
-        self.dining_room_item = {"dining_room":self.dining_room}
+        # self.dining_room_item = {"dining_room":self.dining_room}
 
     def play(self):
         """
@@ -387,7 +435,7 @@ class Game:
                         print("Do not know what you mean")
 
         elif second_word == "mini_game":
-            ## If mini_game is not in the backpack or in the room, si not possible to do it
+            ## If mini_game is not in the backpack, not possible to do it
             if (second_word not in self.my_player.backpack.contents):
                 self.textUI.print_to_textUI("The mini_game is not in your backpack")
             else:
@@ -402,6 +450,8 @@ class Game:
                     else: 
                         self.textUI.print_to_textUI("The storage room password is in you backpack")
                         self.textUI.print_lines()
+                        ##Remove the mini_game from the backpack
+                        self.my_player.backpack.remove_item(second_word)
                         quit_mini_game = True
 
         elif second_word == "hangman_game":
@@ -421,7 +471,15 @@ class Game:
             if (second_word not in self.my_player.backpack.contents):
                 self.textUI.print_to_textUI("The operation_game is not in your backpack")
             else:
-                self.my_player.backpack.process_operation_game(self.dining_room_item)
+                ##Operation_game context
+                self.textUI.operation_game_info()
+                start_game, word2 = self.textUI.get_command()
+                if start_game == 'start':
+                    self.my_player.backpack.process_operation_game(self.game_rooms)
+                    self.textUI.print_lines()
+                else:
+                    self.textUI.print_to_textUI("Remember to solve the operation_game to open the dining_room door")
+                    self.textUI.print_lines()
 
         ##Use pocket to increase backpack capacity
         elif second_word == "pocket":
@@ -468,8 +526,13 @@ class Game:
             self.textUI.print_to_textUI("Remove what item?")
             return
         
+        ##Get the potential deleted object
+        object_to_remove = self.my_player.backpack.contents[second_word]
+        
         if self.my_player.backpack.remove_item(second_word) == True:
             self.textUI.print_to_textUI(f"{second_word} was remove from your backpack")
+            ##Add the remove item to the current room
+            self.my_player.current_room.add_item_to_room(object_to_remove)
 
     def do_pick_command(self, second_word):
         """
@@ -528,7 +591,7 @@ class Game:
             ## Check if the room is locked
             if next_room.locked is not None:
                 ## Go inside the room if does not require card, password and it was typed properly
-                if next_room.can_enter(self.my_player.backpack, game_rooms = self.game_rooms, next_room = next_room, dining_room_lock = self.dining_room_item):
+                if next_room.can_enter(self.my_player.backpack, game_rooms = self.game_rooms, next_room = next_room, dining_room_lock = self.game_rooms):
                     self.my_player.current_room = next_room
                     self.textUI.print_to_textUI(self.my_player.current_room.get_long_description())
                     return

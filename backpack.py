@@ -75,7 +75,7 @@ class Backpack:
 
         quit_operation_game = True
         print("Solve 2 questions to get the object")
-        print("Type '000' to quit the game")
+        print("Type 'back' to quit the game")
 
         dining_room_lock = dining_room_item["dining_room"]
 
@@ -84,11 +84,12 @@ class Backpack:
             num1 = random.randint(-20, 20)
             num2 = random.randint(-20, 20)
             correct_answer = num1 + num2
+            str_correct_answer = str(correct_answer)
 
             print(f"What is the sum of {num1} and {num2}?")
 
             try:
-                user_answer = int(input("Your answer: "))
+                user_answer = input("Your answer: ")
             except ValueError:
                 print("Invalid input. Please enter a valid number")
                 continue
@@ -97,7 +98,7 @@ class Backpack:
                 print("Time is up! You took too long to answer")
                 quit_operation_game = False
 
-            if user_answer == correct_answer:
+            if user_answer == str_correct_answer:
                 cnt += 1
                 print("Correct! Your score is now:", cnt)
                 if cnt == number_of_operations:
@@ -107,7 +108,7 @@ class Backpack:
                     print("The dining_room door is now open")
                     quit_operation_game = False
 
-            elif user_answer == 000:
+            elif user_answer == "back":
                 quit_operation_game = False
 
             else:

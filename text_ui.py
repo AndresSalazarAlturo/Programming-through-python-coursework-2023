@@ -98,6 +98,57 @@ class TextUI:
         you have all the time you need and wrong answers won't affect your escape!
                             """)
 
+    def operation_game_info(self):
+        """
+            Show the information related to operation_game in storage room
+            and some game context
+        """
+        self.print_to_textUI("""
+
+        It is interesting how a 'human' just behave as a little scary animal when it feels trapped and
+        alone. However, you are still a little mouse in my experiment and maybe not focus and intelligent 
+        enough to solve some basic operations. If you win you maybe be a step closer to the exit...
+        Or not...
+
+        Try to solve all the operations in less than 20 seconds and open the dining_room door, good luck.
+
+        How to play:
+        Type 'start' to play the game.
+        Type 'back' to quit the game.
+        Answer correctly all the operations within the time limit and get the item. If fail, try again
+        you have unlimited opportunities. Hope you scape ASAP!
+                            """)
+        
+    def gargen_context(self):
+        """
+            Show some information related with the garden and the object in it
+        """
+
+        self.print_to_textUI("""
+
+        The garden is everything but a beautiful garden, looks like a junkyard there are lots of old clothes
+        all around the place. The plants look strange too, like angry and dark green, they do not have
+        eyes but you can feel that they look at you and laugh...
+        
+        In the middle there is a stone, look like a diamond, seems to be the object that could help you to escape.
+                            """)
+
+    def final_context(self):
+        """
+            Show some final context and thanks for playing
+        """
+
+        self.print_to_textUI("""
+
+        You escaped!! Congratulations!! It was really close, but you are brave and smart, they never had a chance to
+        keep you there for too long.
+        
+        Thank you for playing!!
+        
+        Developed by Andres Sebastian Salazar Alturo :D
+                            """)
+
+
     def show_command_words(self):
         """
             Show a list of available commands.

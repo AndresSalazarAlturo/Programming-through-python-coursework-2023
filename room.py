@@ -43,17 +43,17 @@ class Room:
 
         self.room_items[item.item_name] = item
         return True
-    
+
     def remove_item_to_room(self, item):
         """
             Remove an item to room. Is used when the player pick an item from the room
         :param item: The item picked by the player
-        :return: None
+        :return: True when remove the item
         """
         self.room_items.pop(item)
         print(f"{item} is no longer in the room")
+        return True
 
-    
     def add_hidden_item_to_room(self, item):
         """
             Add the hidden item to room_items that are stored in a dictionary.
@@ -92,6 +92,10 @@ class Room:
 
                 elif dining_room_lock.locked == True and next_room == dining_room_lock:
                     print("The room is locked, solve the figures mini_game to access")
+                    return False
+
+                elif self.locked == "key" and "key" not in backpack.contents:
+                    print("The door is locked, get the key to go out")
                     return False
 
                 else:
